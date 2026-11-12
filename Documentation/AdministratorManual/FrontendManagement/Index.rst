@@ -226,11 +226,51 @@ Templates of EXT:form
     finisher `EmailToReceiver` are located in
     :file:`Resources/Private/FormFramework/`:
     :file:`Partials/Field/Field.html`,
-    :file:`Partials/Form/Navigation.html`,
     :file:`Partials/Events2Location.html` and
     :file:`Templates/Finishers/Email/Default.html` with the text part
     :file:`Templates/Finishers/Email/Default.txt`. Override them in your
     copy of the form definition or in the EXT:form configuration.
+
+..  _frontend-management-markup:
+
+Markup of the event form
+------------------------
+
+..  versionchanged:: 12.0.0
+
+    The event form uses the template variant `version2` of EXT:form and
+    renders the element description below the field. See
+    :ref:`upgrade-12-0-0-bootstrap`.
+
+The event form renders the markup of Bootstrap 5. It uses the template
+variant `version2` of EXT:form, which sets classes like `form-control`,
+`form-label`, `form-check-input` and `mb-3`. Fields with validation
+errors get the class `is-invalid`, the error messages are rendered with
+`invalid-feedback`. The navigation buttons are rendered by the partial
+of EXT:form.
+
+:file:`NewEvent.form.yaml` activates the template variant and adds the
+partial root path of events2 to the form only:
+
+..  code-block:: yaml
+    :caption: EXT:events2/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    renderingOptions:
+      submitButtonLabel: Submit
+      templateVariant: version2
+      partialRootPaths:
+        1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
+
+Keep both options in an own copy of the form definition. To override the
+partials, add your own path with a higher key.
+
+The description of an element (:yaml:`properties.elementDescription`) is
+shown as small text directly below the field and is referenced by
+`aria-describedby` of the field:
+
+..  code-block:: html
+
+    <small id="newEvent-title-desc" class="form-text text-muted">Title</small>
 
 ..  _frontend-management-mail:
 

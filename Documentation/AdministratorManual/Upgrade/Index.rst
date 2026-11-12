@@ -530,11 +530,113 @@ Please compare your overrides of :file:`ListMyEvents.html` and
 overridden the versions of the Extbase form, which had the same names.
 
 The templates of EXT:form stay in :file:`Resources/Private/FormFramework/`:
-:file:`Partials/Field/Field.html`, :file:`Partials/Form/Navigation.html`,
-:file:`Partials/Events2Location.html` and
-:file:`Templates/Finishers/Email/Default.html`. The new file
+:file:`Partials/Field/Field.html`, :file:`Partials/Events2Location.html`
+and :file:`Templates/Finishers/Email/Default.html`. The new file
 :file:`Templates/Finishers/Email/Default.txt` is the text part of the
-mail.
+mail. :file:`Partials/Form/Navigation.html` has been removed, see
+:ref:`upgrade-12-0-0-bootstrap`.
+
+..  _upgrade-12-0-0-bootstrap:
+
+Frontend markup uses Bootstrap 5
+--------------------------------
+
+The templates of events2 and the event form use the classes of
+Bootstrap 5. On a page with Bootstrap 5 the output works without own CSS
+or template overrides.
+
+The event form uses the template variant `version2` of EXT:form
+(:yaml:`renderingOptions.templateVariant: version2` in
+:file:`NewEvent.form.yaml`). The legacy templates of EXT:form are
+deprecated since TYPO3 12 and removed in TYPO3 14. The partial root path
+:file:`EXT:events2/Resources/Private/FormFramework/Partials/` is set in
+:file:`NewEvent.form.yaml` with the key `1661248033`, not in
+:file:`OverrideFormSettings.yaml` anymore. So the partials of events2 do
+not change other forms of your installation. The template and layout
+root paths with this key have been removed, as they contained no files.
+
+If you use an own copy of :file:`NewEvent.form.yaml`, add both rendering
+options. Without the partial root path, the partial of the element
+`Events2Location` can not be found:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    renderingOptions:
+      submitButtonLabel: Submit
+      templateVariant: version2
+      partialRootPaths:
+        1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
+
+The description of a form element (:yaml:`elementDescription`) is
+rendered as text below the field:
+
+..  code-block:: html
+
+    <small id="newEvent-title-desc" class="form-text text-muted">Title</small>
+
+The tooltip with the warning icon has been removed. The following files,
+settings and labels do not exist anymore:
+
+*   :file:`Resources/Public/Css/Tooltip.css` and its include
+    :typoscript:`page.includeCSS.eventsTooltip`
+*   :file:`Resources/Public/Icons/warning.svg`
+*   :file:`Resources/Private/FormFramework/Partials/Form/Navigation.html`.
+    The navigation partial of EXT:form renders the buttons.
+*   The label `hint`
+
+Please check the following, if you have customized the output:
+
+*   Compare your overrides of :file:`Field.html` and
+    :file:`Events2Location.html` with the new files. They are based on
+    the partials in
+    :file:`EXT:form/Resources/Private/FrontendVersion2/Partials/` now.
+    Validation errors are rendered with the class `invalid-feedback`,
+    the field gets the class `is-invalid`.
+*   Remove own styles for `.tooltip`, `[role="tooltip"]`,
+    `.control-label`, `.form-group`, `.has-error` and `.ui-state-error`
+    of the event form. The CSS class `tooltip` of Bootstrap 5 hides an
+    element, so the former tooltip markup is invisible with Bootstrap 5.
+*   The link to request a new location is rendered only, if
+    `events2.pidOfNewLocationPage` is set. Its text comes from the new
+    labels `requestNewLocation` and `requestNewLocation.title`.
+*   The counter of the remaining letters is a `div` with the classes
+    `events2-remaining-letters form-text`.
+
+The following classes have been replaced in the templates and partials
+of the plugins. Update your overrides and your CSS:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Before
+        -   Now
+    *   -   `form-group`
+        -   `row mb-3` (search form)
+    *   -   `control-label`
+        -   `col-form-label` (search form), `form-label` (filter)
+    *   -   `col-sm-offset-3`
+        -   `offset-sm-3`
+    *   -   `form-horizontal`
+        -   removed
+    *   -   `form-control` of `select`
+        -   `form-select`
+    *   -   `img-responsive`
+        -   `img-fluid`
+    *   -   `media-heading`
+        -   `mb-1`
+    *   -   `align-right info-box`
+        -   `text-end`
+    *   -   `nav` and `f3-widget-paginator` of the pagination
+        -   `pagination`, `page-item` and `page-link`
+    *   -   `grid_8 floatleft` and `gridright` of the video
+        -   `ratio ratio-16x9`
+    *   -   `extdl marginbottom2`
+        -   removed
+
+The icon spans with the classes `glyphicon glyphicon-*` and
+`icon-arrowright` have been removed, as Bootstrap 5 contains no icon
+font. Add your own icons in overrides of the templates, if needed.
 
 ..  _upgrade-12-0-0-mail:
 
@@ -685,7 +787,7 @@ The following labels have been removed from
 `create`, `deleteImage`, `remainingLetters`, `cshTitle`, `cshTeaser`,
 `cshEventBegin`, `cshEventEnd`, `cshTimeBegin`, `cshCategories`,
 `cshLocation`, `cshVideo`, `cshImages`, `eventCreated`, `eventUpdated`,
-`eventDeleted`, `email.subject.create`, `email.subject.update`,
+`eventDeleted`, `email.subject.create`, `email.subject.update`, `hint`,
 `validator.event.categories.isMandatory` and
 `validator.event.videoLink.notYouTube`.
 

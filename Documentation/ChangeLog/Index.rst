@@ -42,7 +42,25 @@ This version contains breaking changes, please read
 *   [FEATURE] Render rich text elements in the mails of the event form
     sanitized as HTML and as plain text with the new
     :ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`.
-*   [TASK] Localize the hint icon of the event form.
+*   [!!!][TASK] Use the classes of Bootstrap 5 in all frontend templates
+    and partials, for example `row mb-3`, `col-form-label`,
+    `form-select`, `img-fluid`, `text-end` and `pagination`. Icon spans
+    of `glyphicon` and `icon-arrowright` are removed. See
+    :ref:`upgrade-12-0-0-bootstrap`.
+*   [!!!][TASK] Render the event form with the template variant
+    `version2` of EXT:form. The partial root path of events2 is set in
+    :file:`NewEvent.form.yaml` instead of
+    :file:`OverrideFormSettings.yaml`. :file:`Field.html` is based on the
+    version2 partial, validation errors use `invalid-feedback`. The own
+    :file:`Partials/Form/Navigation.html` is removed. Update copies of
+    the form, see :ref:`upgrade-12-0-0-bootstrap`.
+*   [!!!][TASK] Show the element description as
+    `small.form-text.text-muted` below the form field. The tooltip,
+    :file:`Tooltip.css` with :typoscript:`page.includeCSS.eventsTooltip`,
+    :file:`warning.svg` and the label `hint` are removed.
+*   [BUGFIX] Show the link to request a new location in the event form
+    only, if `events2.pidOfNewLocationPage` is set, and localize it with
+    the new labels `requestNewLocation` and `requestNewLocation.title`.
 *   [!!!][TASK] Simplify the access rules of the frontend management.
     :php:`ManagementAccessService` reads the user group from TypoScript
     and the event to edit from the query parameter
