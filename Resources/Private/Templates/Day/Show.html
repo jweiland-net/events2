@@ -24,17 +24,15 @@
 
 <f:section name="NewEdit">
     <f:security.ifHasRole role="{settings.userGroup}">
-        <p class="align-right info-box">
+        <p class="text-end">
             <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" title="{f:translate(key: 'newEntry')}">
                 {f:translate(key: 'newEntry')}
-                <span aria-hidden="true" class="icon-arrowright"></span>
             </f:link.action>
         </p>
         <f:if condition="{event.isCurrentUserAllowedOrganizer}">
-            <p class="align-right info-box">
+            <p class="text-end">
                 <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" arguments="{event: event, timestamp: '0'}" title="{f:translate(key: 'update')}">
                     {f:translate(key: 'update')}
-                    <span aria-hidden="true" class="icon-arrowright"></span>
                 </f:link.action>
             </p>
         </f:if>

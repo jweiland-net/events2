@@ -115,7 +115,11 @@ class VideoControllerTest extends FunctionalTestCase
             $content,
         );
         self::assertStringContainsString(
-            '<iframe width="560" height="315" src="//www.youtube.com/embed/' . $videoId . '" frameborder="0" allowfullscreen></iframe>',
+            '<div class="ratio ratio-16x9">',
+            $content,
+        );
+        self::assertStringContainsString(
+            '<iframe src="//www.youtube.com/embed/' . $videoId . '" title="Video Link" allowfullscreen></iframe>',
             $content,
         );
     }

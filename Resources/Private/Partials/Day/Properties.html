@@ -46,7 +46,6 @@
 <f:section name="VideoLink">
     <f:if condition="{event.videoLink}">
         <f:link.action action="show" controller="Video" arguments="{event: event}">
-            <span class="glyphicon glyphicon-film" aria-hidden="true"></span>
             {f:if(condition: event.videoLink.title, then: event.videoLink.title, else: 'Video')}
         </f:link.action>
     </f:if>
@@ -58,7 +57,7 @@
             <f:for each="{event.downloadLinks}" as="downloadLink">
                 <li>
                     <f:link.typolink parameter="{downloadLink.link}" title="{downloadLink.title}">
-                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;{downloadLink.title}
+                        {downloadLink.title}
                     </f:link.typolink>
                 </li>
             </f:for>
@@ -147,7 +146,6 @@
             <dt><f:translate key="routePlanner"/></dt>
             <dd>
                 <f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
-                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
                     <f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Google Maps</f:link.external>
                 </f:alias>
             </dd>
@@ -182,7 +180,7 @@
 
 <f:section name="FreeEntry">
     <f:if condition="{event.freeEntry}">
-        <dl class="extdl marginbottom2">
+        <dl>
             <dt><f:translate key="tx_events2_domain_model_event.free_entry"/></dt>
             <dd><f:translate key="yes"/></dd>
         </dl>
@@ -193,7 +191,6 @@
     <dl>
         <dt>iCalendar</dt>
         <dd>
-            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
             <f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
                 {f:translate(key: 'export')}
             </f:link.action>
