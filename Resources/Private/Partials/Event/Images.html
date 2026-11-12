@@ -24,7 +24,7 @@
     <f:comment><!-- In most cases this will be used as SlideShow. So no Videos or Audios are allowed here.--></f:comment>
     <f:if condition="{image.type} == 2">
         <f:image image="{image}"
-                 class="img-responsive img-thumbnail"
+                 class="img-fluid img-thumbnail"
                  alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
                  width="1016c"
                  height="448c"
@@ -61,7 +61,7 @@
         </f:case>
         <f:defaultCase>
             <f:image image="{image}"
-                     class="img-responsive img-thumbnail"
+                     class="img-fluid img-thumbnail"
                      alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
                      width="{settings.show.image.width}"
                      height="{settings.show.image.height}"

@@ -14,10 +14,8 @@
         </f:then>
         <f:else>
             <header><h1>{event.videoLink.title}</h1></header>
-            <div class="grid_8 floatleft">
-                <div class="gridright">
-                    <iframe width="560" height="315" src="{e2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
-                </div>
+            <div class="ratio ratio-16x9">
+                <iframe src="{e2:createYoutubeUri(link: event.videoLink.link)}" title="{event.videoLink.title}" allowfullscreen></iframe>
             </div>
         </f:else>
     </f:if>

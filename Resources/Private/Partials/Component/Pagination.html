@@ -3,28 +3,28 @@
       data-namespace-typo3-fluid="true">
 
 <f:if condition="{pagination.lastPageNumber} > 1">
-    <nav class="nav">
-        <ul class="f3-widget-paginator">
+    <nav aria-label="{f:translate(key: 'pageBrowser')}">
+        <ul class="pagination">
             <f:if condition="{paginator.currentPageNumber} > 1">
-                <li class="first">
+                <li class="page-item first">
                     <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.firstPageArguments, transKey: 'pageBrowser.first', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{pagination.previousPageNumber}">
-                <li class="previous">
+                <li class="page-item previous">
                     <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.previousPageArguments, transKey: 'pageBrowser.previous', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{pagination.nextPageNumber}">
-                <li class="next">
+                <li class="page-item next">
                     <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.nextPageArguments, transKey: 'pageBrowser.next', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{paginator.currentPageNumber} < {pagination.lastPageNumber}">
-                <li class="last">
+                <li class="page-item last">
                     <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.lastPageArguments, transKey: 'pageBrowser.last', actionName: actionName}"/>
                 </li>
@@ -35,7 +35,7 @@
 
 <f:section name="RenderPageLink">
     <f:variable name="actionName">{f:if(condition: actionName, then: actionName, else: 'list')}</f:variable>
-    <f:link.action action="{actionName}" addQueryString="1" arguments="{linkArguments}">
+    <f:link.action action="{actionName}" addQueryString="1" arguments="{linkArguments}" class="page-link">
         {f:if(condition: value, then: value, else: '{f:translate(key: transKey)}')}
     </f:link.action>
 </f:section>
