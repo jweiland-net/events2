@@ -1,8 +1,6 @@
 page.includeCSS {
   # Only needed for management plugin. If you don't need that plugin you can remove this line.
   eventsAutoComplete = EXT:events2/Resources/Public/Css/AutoComplete.min.css
-  # Only needed for management plugin. If you don't need that plugin you can remove this line.
-  eventsTooltip = EXT:events2/Resources/Public/Css/Tooltip.css
 }
 
 page.includeJSFooter {

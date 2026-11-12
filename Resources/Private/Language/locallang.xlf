@@ -378,9 +378,6 @@
 			<trans-unit id="required">
 				<source>required</source>
 			</trans-unit>
-			<trans-unit id="hint">
-				<source>Hint</source>
-			</trans-unit>
 			<trans-unit id="update">
 				<source>Update</source>
 			</trans-unit>
