@@ -27,8 +27,8 @@ const initializeCounter = (textarea) => {
   }
 
   const label = textarea.dataset.events2RemainingLetters;
-  const counter = document.createElement('p');
-  counter.className = 'events2-remaining-letters';
+  const counter = document.createElement('div');
+  counter.className = 'events2-remaining-letters form-text';
   counter.id = `${textarea.id || textarea.name}-remaining-letters`;
   counter.setAttribute('aria-live', 'polite');
 

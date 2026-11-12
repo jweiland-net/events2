@@ -23,18 +23,21 @@ TYPO3:
                 translation:
                   translationFiles:
                     20: 'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf'
-                templateRootPaths:
-                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Templates/'
-                partialRootPaths:
-                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
-                layoutRootPaths:
-                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Layouts/'
             Events2Location:
               implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
               properties:
                 containerClassAttribute: input
                 elementClassAttribute: ''
                 elementErrorClassAttribute: error
+              variants:
+                -
+                  identifier: template-variant
+                  condition: 'getRootFormProperty("renderingOptions.templateVariant") == "version2"'
+                  properties:
+                    containerClassAttribute: 'form-element form-element-events2-location mb-3'
+                    elementClassAttribute: form-control
+                    elementErrorClassAttribute: ~
+                    labelClassAttribute: form-label
       persistenceManager:
         allowedExtensionPaths:
           10: EXT:events2/Configuration/Form/
