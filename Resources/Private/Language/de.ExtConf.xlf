@@ -19,9 +19,9 @@
         <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
         <target state="final">x Monate in Zukunft: Bei der Erstellung einer wiederkehrenden Veranstaltung kann events2 Tagesdatensätze für die nächsten x Monate erstellen.</target>
       </trans-unit>
-      <trans-unit id="defaultCountry" approved="yes">
-        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-        <target state="final">Standardland: Wenn Sie nur Veranstaltungsorte für ein bestimmtes Land erstellen, ist es hilfreich hier ein Standardland anzugeben. Sie müssen im Datensatz also nur Straße und Stadt hinzufügen, um einen Point of Interest zu finden. Wenn du POIs aus der ganzen Welt benötigst, halte dieses Feld bitte leer</target>
+      <trans-unit id="defaultCountry">
+        <source>Default country: ISO 3166-1 alpha-2 code (f.e. DE) of the country, which will be preselected for new locations in backend. Keep this field empty, if no country should be preselected.</source>
+        <target state="needs-translation">Default country: ISO 3166-1 alpha-2 code (f.e. DE) of the country, which will be preselected for new locations in backend. Keep this field empty, if no country should be preselected.</target>
       </trans-unit>
       <trans-unit id="xmlImportValidatorPath" approved="yes">
         <source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
@@ -39,9 +39,6 @@
         <source>Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</source>
         <target state="final">Ist Kategorie erforderlich: Standardmäßig ist es nicht erforderlich, eine Kategorie explizit festzulegen. Aber, wenn du willst, kannst du die Kategorie als benötigte Eigenschaft setzen mit der Aktivierung dieses Kontrollkästchens</target>
       </trans-unit>
-      <trans-unit id="pathSegmentType" xml:space="preserve" approved="yes">
-				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
-			<target state="final">Typ für sprechende URL: Setzt den Sprechende URL Typ für im Frontend erstellte Veranstaltungen und den PathSegment UpdateWizard. Bei "Do nothing" bleibt path_segment unberührt. Bei "RealUrl" wird dem path_segment ein Zähler angefügt, um Duplikate zu verhindern (brot, brot-1, brot-2). Bei "UID" wird path_segment auf Basis von Titel und UID erstellt.</target></trans-unit>
       <trans-unit id="emailFromAddress" xml:space="preserve" approved="yes">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
 			<target state="final">E-Mail von Adresse: Die E-Mail-Adresse des Absenders. Falls nicht angegeben, versucht events2 eine E-Mail Adresse vom INSTALL_TOOL zu erhalten.</target></trans-unit>
