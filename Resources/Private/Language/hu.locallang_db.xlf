@@ -107,14 +107,6 @@
         <source>Create new time</source>
         <target state="translated">Új időpont létrehozása</target>
       </trans-unit>
-      <trans-unit id="task.reCreateDays.title">
-        <source>Re-Create day records</source>
-        <target state="translated">Naprekordok újralétrehozása</target>
-      </trans-unit>
-      <trans-unit id="task.reCreateDays.description">
-        <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
-        <target state="translated">Végiglép az összes jelenlegi és jövőbeli eseményen, hogy törölje és újra létrehozza a naprekordjaikat. Emellett kitakarítja az összes régi iCal-exportfájlt.</target>
-      </trans-unit>
       <trans-unit id="sys_reaction.reaction_type.import_events2_records">
         <source>Import events2 records</source>
         <target state="translated">events2 rekordok importálása</target>
