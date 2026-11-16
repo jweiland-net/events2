@@ -107,14 +107,6 @@
         <source>Create new time</source>
         <target state="final">Neue Zeit erstellen</target>
       </trans-unit>
-      <trans-unit id="task.reCreateDays.title" approved="yes">
-        <source>Re-Create day records</source>
-        <target state="final">Tagesdatensätze neu erstellen</target>
-      </trans-unit>
-      <trans-unit id="task.reCreateDays.description" approved="yes">
-        <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
-        <target state="final">Lässt alle aktuellen und zukünftigen Ereignisse durchlaufen, um Tagesdatensätze zu löschen und neu zu erstellen. Darüber hinaus werden alle alten iCal Exportdateien bereinigt.</target>
-      </trans-unit>
       <trans-unit id="sys_reaction.reaction_type.import_events2_records" approved="yes">
         <source>Import events2 records</source>
         <target state="final">Importiere events2 Datensätze</target>
