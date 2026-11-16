@@ -107,14 +107,6 @@
         <source>Create new time</source>
         <target>crwdns306756:0crwdne306756:0</target>
       </trans-unit>
-      <trans-unit id="task.reCreateDays.title">
-        <source>Re-Create day records</source>
-        <target>crwdns306758:0crwdne306758:0</target>
-      </trans-unit>
-      <trans-unit id="task.reCreateDays.description">
-        <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
-        <target>crwdns306760:0crwdne306760:0</target>
-      </trans-unit>
       <trans-unit id="sys_reaction.reaction_type.import_events2_records">
         <source>Import events2 records</source>
         <target>crwdns355518:0crwdne355518:0</target>
