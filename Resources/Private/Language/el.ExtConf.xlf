@@ -20,8 +20,8 @@
         <target state="needs-translation">x months in future: When creating a new recurring event this extension can create related day records for the next x months.</target>
       </trans-unit>
       <trans-unit id="defaultCountry">
-        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-        <target state="needs-translation">Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</target>
+        <source>Default country: ISO 3166-1 alpha-2 code (f.e. DE) of the country, which will be preselected for new locations in backend. Keep this field empty, if no country should be preselected.</source>
+        <target state="needs-translation">Default country: ISO 3166-1 alpha-2 code (f.e. DE) of the country, which will be preselected for new locations in backend. Keep this field empty, if no country should be preselected.</target>
       </trans-unit>
       <trans-unit id="xmlImportValidatorPath">
         <source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
@@ -39,9 +39,6 @@
         <source>Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</source>
         <target state="needs-translation">Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</target>
       </trans-unit>
-      <trans-unit id="pathSegmentType" xml:space="preserve">
-				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
-			<target state="needs-translation">Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</target></trans-unit>
       <trans-unit id="emailFromAddress" xml:space="preserve">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
 			<target state="needs-translation">email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</target></trans-unit>
