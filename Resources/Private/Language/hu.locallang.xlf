@@ -391,6 +391,10 @@
         <source>Free entry</source>
         <target state="translated">Ingyenes belépés</target>
       </trans-unit>
+      <trans-unit id="pageBrowser">
+        <source>Pagination</source>
+        <target state="needs-translation">Pagination</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target state="translated">Első</target>
@@ -414,18 +418,6 @@
       <trans-unit id="listMyEvents">
         <source>List my events</source>
         <target state="translated">Eseményeim listája</target>
-      </trans-unit>
-      <trans-unit id="eventCreated">
-        <source>Your new Event was created.</source>
-        <target state="translated">Az új esemény létrehozva.</target>
-      </trans-unit>
-      <trans-unit id="eventUpdated">
-        <source>Your Event has been updated.</source>
-        <target state="translated">Az esemény frissítve.</target>
-      </trans-unit>
-      <trans-unit id="eventDeleted">
-        <source>Your Event has been removed.</source>
-        <target state="translated">Az esemény eltávolítva.</target>
       </trans-unit>
       <trans-unit id="showDetailview">
         <source>See Single View</source>
@@ -499,13 +491,13 @@
         <source>required</source>
         <target state="translated">kötelező</target>
       </trans-unit>
-      <trans-unit id="hint">
-        <source>Hint</source>
-        <target state="translated">Tipp</target>
+      <trans-unit id="requestNewLocation">
+        <source>Request a new location</source>
+        <target state="needs-translation">Request a new location</target>
       </trans-unit>
-      <trans-unit id="create">
-        <source>Create</source>
-        <target state="translated">Létrehozás</target>
+      <trans-unit id="requestNewLocation.title">
+        <source>Request a new event location</source>
+        <target state="needs-translation">Request a new event location</target>
       </trans-unit>
       <trans-unit id="update">
         <source>Update</source>
@@ -514,10 +506,6 @@
       <trans-unit id="save">
         <source>Save</source>
         <target state="translated">Mentés</target>
-      </trans-unit>
-      <trans-unit id="remainingLetters">
-        <source>Remaining letters</source>
-        <target state="translated">Hátralévő betűk</target>
       </trans-unit>
       <trans-unit id="userGroupNotConfigured">
         <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
@@ -559,6 +547,10 @@
         <source>Open in a new tab</source>
         <target state="needs-translation">Open in a new tab</target>
       </trans-unit>
+      <trans-unit id="remainingLetters">
+        <source>%s characters left</source>
+        <target state="needs-translation">%s characters left</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target state="translated">Első</target>
@@ -575,81 +567,17 @@
         <source>Last</source>
         <target state="translated">Utolsó</target>
       </trans-unit>
-      <trans-unit id="email.subject.create">
-        <source>A new record was created</source>
-        <target state="translated">Új rekord létrehozva</target>
-      </trans-unit>
-      <trans-unit id="email.subject.update">
-        <source>A record was updated</source>
-        <target state="translated">A rekord frissítve</target>
-      </trans-unit>
       <trans-unit id="email.subject.activate">
         <source>A record was activated</source>
         <target state="translated">A rekord aktiválva</target>
-      </trans-unit>
-      <trans-unit id="validator.event.videoLink.notYouTube">
-        <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-        <target state="translated">A videóhivatkozáshoz megadott URI nem YouTube-hivatkozás. Ez az űrlap jelenleg csak YouTube-hivatkozásokat engedélyez.</target>
-      </trans-unit>
-      <trans-unit id="validator.event.categories.isMandatory">
-        <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
-        <target state="translated">A "categories" tulajdonság kötelezőként van megadva. Kérjük, válasszon ki legalább egy kategóriát.</target>
       </trans-unit>
       <trans-unit id="error.locationFail">
         <source>The given location does not exist in our database. Please choose another one</source>
         <target state="translated">A megadott helyszín nem létezik az adatbázisunkban. Kérjük, válasszon másikat</target>
       </trans-unit>
-      <trans-unit id="cshTitle">
-        <source>The title is mandatory</source>
-        <target state="translated">A cím kötelező</target>
-      </trans-unit>
-      <trans-unit id="cshTeaser">
-        <source>The teaser is a short description and will be displayed on list views</source>
-        <target state="translated">A beharangozó egy rövid leírás, amely a listanézetekben jelenik meg</target>
-      </trans-unit>
-      <trans-unit id="cshEventBegin">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="translated">Ezt a dátumot a következő formátumban kell megadni: dd.mm.yyyy</target>
-      </trans-unit>
-      <trans-unit id="cshEventEnd">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="translated">Ezt a dátumot a következő formátumban kell megadni: dd.mm.yyyy</target>
-      </trans-unit>
-      <trans-unit id="cshTimeBegin">
-        <source>The time of the event has to be fill in following format: hh:mm</source>
-        <target state="translated">Az esemény időpontját a következő formátumban kell megadni: hh:mm</target>
-      </trans-unit>
-      <trans-unit id="cshCategories">
-        <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="translated">A kategóriák kötelezőek. A több kategória kiválasztásához tartsa lenyomva a STRG vagy a CMD billentyűt a billentyűzeten.</target>
-      </trans-unit>
-      <trans-unit id="cshLocation">
-        <source>The location is mandatory</source>
-        <target state="translated">A helyszín kötelező</target>
-      </trans-unit>
-      <trans-unit id="cshVideo">
-        <source>Insert here the link to a video film</source>
-        <target state="translated">Ide illessze be a videófilm hivatkozását</target>
-      </trans-unit>
-      <trans-unit id="cshImages">
-        <source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
-        <target state="needs-translation">Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</target>
-      </trans-unit>
-      <trans-unit id="deleteImage">
-        <source>Delete image</source>
-        <target state="needs-translation">Delete image</target>
-      </trans-unit>
       <trans-unit id="altTextMapImg">
         <source>Map</source>
         <target state="translated">Térkép</target>
-      </trans-unit>
-      <trans-unit id="scheduler.path">
-        <source>Path of file to import</source>
-        <target state="translated">Az importálandó fájl útvonala</target>
-      </trans-unit>
-      <trans-unit id="scheduler.storagePid">
-        <source>Storage PID</source>
-        <target state="translated">Tárolási PID</target>
       </trans-unit>
     </body>
   </file>
