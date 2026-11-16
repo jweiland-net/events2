@@ -391,6 +391,10 @@
         <source>Free entry</source>
         <target state="final">Freier Eintritt</target>
       </trans-unit>
+      <trans-unit id="pageBrowser">
+        <source>Pagination</source>
+        <target state="needs-translation">Pagination</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
         <target state="final">Erste</target>
@@ -414,18 +418,6 @@
       <trans-unit id="listMyEvents" approved="yes">
         <source>List my events</source>
         <target state="final">Meine Veranstaltungen auflisten</target>
-      </trans-unit>
-      <trans-unit id="eventCreated" approved="yes">
-        <source>Your new Event was created.</source>
-        <target state="final">Ihre neue Veranstaltung wurde erstellt.</target>
-      </trans-unit>
-      <trans-unit id="eventUpdated" approved="yes">
-        <source>Your Event has been updated.</source>
-        <target state="final">Ihre Veranstaltung wurde aktualisiert.</target>
-      </trans-unit>
-      <trans-unit id="eventDeleted" approved="yes">
-        <source>Your Event has been removed.</source>
-        <target state="final">Ihre Veranstaltung wurde entfernt.</target>
       </trans-unit>
       <trans-unit id="showDetailview" approved="yes">
         <source>See Single View</source>
@@ -499,13 +491,13 @@
         <source>required</source>
         <target state="final">erforderlich</target>
       </trans-unit>
-      <trans-unit id="hint" approved="yes">
-        <source>Hint</source>
-        <target state="final">Hinweis</target>
+      <trans-unit id="requestNewLocation">
+        <source>Request a new location</source>
+        <target state="needs-translation">Request a new location</target>
       </trans-unit>
-      <trans-unit id="create" approved="yes">
-        <source>Create</source>
-        <target state="final">Erstellen</target>
+      <trans-unit id="requestNewLocation.title">
+        <source>Request a new event location</source>
+        <target state="needs-translation">Request a new event location</target>
       </trans-unit>
       <trans-unit id="update" approved="yes">
         <source>Update</source>
@@ -514,10 +506,6 @@
       <trans-unit id="save" approved="yes">
         <source>Save</source>
         <target state="final">Speichern</target>
-      </trans-unit>
-      <trans-unit id="remainingLetters" approved="yes">
-        <source>Remaining letters</source>
-        <target state="final">Verbleibende Zeichen</target>
       </trans-unit>
       <trans-unit id="userGroupNotConfigured" approved="yes">
         <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
@@ -559,6 +547,10 @@
         <source>Open in a new tab</source>
         <target state="needs-translation">Open in a new tab</target>
       </trans-unit>
+      <trans-unit id="remainingLetters">
+        <source>%s characters left</source>
+        <target state="needs-translation">%s characters left</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
         <target state="final">Erste</target>
@@ -575,81 +567,17 @@
         <source>Last</source>
         <target state="final">Letzte</target>
       </trans-unit>
-      <trans-unit id="email.subject.create" approved="yes">
-        <source>A new record was created</source>
-        <target state="final">Ein neuer Datensatz wurde erstellt</target>
-      </trans-unit>
-      <trans-unit id="email.subject.update" approved="yes">
-        <source>A record was updated</source>
-        <target state="final">Ein Datensatz wurde aktualisiert</target>
-      </trans-unit>
       <trans-unit id="email.subject.activate" approved="yes">
         <source>A record was activated</source>
         <target state="final">Ein Datensatz wurde aktiviert</target>
-      </trans-unit>
-      <trans-unit id="validator.event.videoLink.notYouTube" approved="yes">
-        <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-        <target state="final">Die URI für den Video-Link ist kein YouTube-Link. Dieses Formular erlaubt derzeit nur YouTube-Links.</target>
-      </trans-unit>
-      <trans-unit id="validator.event.categories.isMandatory" approved="yes">
-        <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
-        <target state="final">Die Eigenschaft "Kategorien" ist als obligatorisch definiert. Bitte wählen Sie mindestens eine Kategorie.</target>
       </trans-unit>
       <trans-unit id="error.locationFail" approved="yes">
         <source>The given location does not exist in our database. Please choose another one</source>
         <target state="final">Der angegebene Standort existiert nicht in unserer Datenbank. Bitte wähle einen anderen</target>
       </trans-unit>
-      <trans-unit id="cshTitle" approved="yes">
-        <source>The title is mandatory</source>
-        <target state="final">Der Titel ist ein Pflichfeld</target>
-      </trans-unit>
-      <trans-unit id="cshTeaser" approved="yes">
-        <source>The teaser is a short description and will be displayed on list views</source>
-        <target state="final">Der Teaser ist eine kurze Beschreibung und wird in Listenansichten angezeigt</target>
-      </trans-unit>
-      <trans-unit id="cshEventBegin" approved="yes">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="final">Dieses Datum muss im folgenden Format ausgefüllt werden: dd.mm.yyy</target>
-      </trans-unit>
-      <trans-unit id="cshEventEnd" approved="yes">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="final">Dieses Datum muss im folgenden Format ausgefüllt werden: dd.mm.yyy</target>
-      </trans-unit>
-      <trans-unit id="cshTimeBegin" approved="yes">
-        <source>The time of the event has to be fill in following format: hh:mm</source>
-        <target state="final">Die Zeit der Veranstaltung muss im folgenden Format ausgefüllt werden: hh:mm</target>
-      </trans-unit>
-      <trans-unit id="cshCategories" approved="yes">
-        <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="final">Die Kategorien sind obligatorisch. Bitte drücke STRG oder CMD auf deiner Tastatur, um mehrere Kategorien auszuwählen.</target>
-      </trans-unit>
-      <trans-unit id="cshLocation" approved="yes">
-        <source>The location is mandatory</source>
-        <target state="final">Der Ort ist obligatorisch</target>
-      </trans-unit>
-      <trans-unit id="cshVideo" approved="yes">
-        <source>Insert here the link to a video film</source>
-        <target state="final">Füge hier den Link zu einem Videofilm ein</target>
-      </trans-unit>
-      <trans-unit id="cshImages">
-        <source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
-        <target state="needs-translation">Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</target>
-      </trans-unit>
-      <trans-unit id="deleteImage">
-        <source>Delete image</source>
-        <target state="needs-translation">Delete image</target>
-      </trans-unit>
       <trans-unit id="altTextMapImg" approved="yes">
         <source>Map</source>
         <target state="final">Karte</target>
-      </trans-unit>
-      <trans-unit id="scheduler.path" approved="yes">
-        <source>Path of file to import</source>
-        <target state="final">Pfad der zu importierenden Datei</target>
-      </trans-unit>
-      <trans-unit id="scheduler.storagePid" approved="yes">
-        <source>Storage PID</source>
-        <target state="final">Speicher-PID</target>
       </trans-unit>
     </body>
   </file>
