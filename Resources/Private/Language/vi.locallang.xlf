@@ -391,6 +391,10 @@
         <source>Free entry</source>
         <target state="needs-translation">Free entry</target>
       </trans-unit>
+      <trans-unit id="pageBrowser">
+        <source>Pagination</source>
+        <target state="needs-translation">Pagination</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target state="needs-translation">First</target>
@@ -414,18 +418,6 @@
       <trans-unit id="listMyEvents">
         <source>List my events</source>
         <target state="needs-translation">List my events</target>
-      </trans-unit>
-      <trans-unit id="eventCreated">
-        <source>Your new Event was created.</source>
-        <target state="needs-translation">Your new Event was created.</target>
-      </trans-unit>
-      <trans-unit id="eventUpdated">
-        <source>Your Event has been updated.</source>
-        <target state="needs-translation">Your Event has been updated.</target>
-      </trans-unit>
-      <trans-unit id="eventDeleted">
-        <source>Your Event has been removed.</source>
-        <target state="needs-translation">Your Event has been removed.</target>
       </trans-unit>
       <trans-unit id="showDetailview">
         <source>See Single View</source>
@@ -499,13 +491,13 @@
         <source>required</source>
         <target state="needs-translation">required</target>
       </trans-unit>
-      <trans-unit id="hint">
-        <source>Hint</source>
-        <target state="needs-translation">Hint</target>
+      <trans-unit id="requestNewLocation">
+        <source>Request a new location</source>
+        <target state="needs-translation">Request a new location</target>
       </trans-unit>
-      <trans-unit id="create">
-        <source>Create</source>
-        <target state="needs-translation">Create</target>
+      <trans-unit id="requestNewLocation.title">
+        <source>Request a new event location</source>
+        <target state="needs-translation">Request a new event location</target>
       </trans-unit>
       <trans-unit id="update">
         <source>Update</source>
@@ -514,10 +506,6 @@
       <trans-unit id="save">
         <source>Save</source>
         <target state="needs-translation">Save</target>
-      </trans-unit>
-      <trans-unit id="remainingLetters">
-        <source>Remaining letters</source>
-        <target state="needs-translation">Remaining letters</target>
       </trans-unit>
       <trans-unit id="userGroupNotConfigured">
         <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
@@ -559,6 +547,10 @@
         <source>Open in a new tab</source>
         <target state="needs-translation">Open in a new tab</target>
       </trans-unit>
+      <trans-unit id="remainingLetters">
+        <source>%s characters left</source>
+        <target state="needs-translation">%s characters left</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target state="needs-translation">First</target>
@@ -575,81 +567,17 @@
         <source>Last</source>
         <target state="needs-translation">Last</target>
       </trans-unit>
-      <trans-unit id="email.subject.create">
-        <source>A new record was created</source>
-        <target state="needs-translation">A new record was created</target>
-      </trans-unit>
-      <trans-unit id="email.subject.update">
-        <source>A record was updated</source>
-        <target state="needs-translation">A record was updated</target>
-      </trans-unit>
       <trans-unit id="email.subject.activate">
         <source>A record was activated</source>
         <target state="needs-translation">A record was activated</target>
-      </trans-unit>
-      <trans-unit id="validator.event.videoLink.notYouTube">
-        <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-        <target state="needs-translation">The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</target>
-      </trans-unit>
-      <trans-unit id="validator.event.categories.isMandatory">
-        <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
-        <target state="needs-translation">Property "categories" is defined to be mandatory. Please select at least one category.</target>
       </trans-unit>
       <trans-unit id="error.locationFail">
         <source>The given location does not exist in our database. Please choose another one</source>
         <target state="needs-translation">The given location does not exist in our database. Please choose another one</target>
       </trans-unit>
-      <trans-unit id="cshTitle">
-        <source>The title is mandatory</source>
-        <target state="needs-translation">The title is mandatory</target>
-      </trans-unit>
-      <trans-unit id="cshTeaser">
-        <source>The teaser is a short description and will be displayed on list views</source>
-        <target state="needs-translation">The teaser is a short description and will be displayed on list views</target>
-      </trans-unit>
-      <trans-unit id="cshEventBegin">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
-      </trans-unit>
-      <trans-unit id="cshEventEnd">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
-      </trans-unit>
-      <trans-unit id="cshTimeBegin">
-        <source>The time of the event has to be fill in following format: hh:mm</source>
-        <target state="needs-translation">The time of the event has to be fill in following format: hh:mm</target>
-      </trans-unit>
-      <trans-unit id="cshCategories">
-        <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="needs-translation">The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</target>
-      </trans-unit>
-      <trans-unit id="cshLocation">
-        <source>The location is mandatory</source>
-        <target state="needs-translation">The location is mandatory</target>
-      </trans-unit>
-      <trans-unit id="cshVideo">
-        <source>Insert here the link to a video film</source>
-        <target state="needs-translation">Insert here the link to a video film</target>
-      </trans-unit>
-      <trans-unit id="cshImages">
-        <source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
-        <target state="needs-translation">Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</target>
-      </trans-unit>
-      <trans-unit id="deleteImage">
-        <source>Delete image</source>
-        <target state="needs-translation">Delete image</target>
-      </trans-unit>
       <trans-unit id="altTextMapImg">
         <source>Map</source>
         <target state="needs-translation">Map</target>
-      </trans-unit>
-      <trans-unit id="scheduler.path">
-        <source>Path of file to import</source>
-        <target state="needs-translation">Path of file to import</target>
-      </trans-unit>
-      <trans-unit id="scheduler.storagePid">
-        <source>Storage PID</source>
-        <target state="needs-translation">Storage PID</target>
       </trans-unit>
     </body>
   </file>
