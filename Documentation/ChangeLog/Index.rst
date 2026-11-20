@@ -21,6 +21,10 @@ Version 12.0.1
 *   [BUGFIX] Add the site set `typo3/form` as dependency of the site set
     `jweiland/events2`. It provides the frontend configuration of EXT:form,
     which the event form needs.
+*   [BUGFIX] Translate the event form only with
+    :file:`locallang_ext_form.xlf`. It was registered for all forms of the
+    installation and translated elements of other forms with the same
+    identifiers, e.g. `title`.
 
 Version 12.0.0
 ==============

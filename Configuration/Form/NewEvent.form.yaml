@@ -7,6 +7,11 @@ renderingOptions:
   templateVariant: version2
   partialRootPaths:
     1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
+  # Translations of this form only. Do not register them in the prototype,
+  # as the keys "element.<identifier>..." would translate other forms, too.
+  translation:
+    translationFiles:
+      20: 'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf'
 renderables:
   - renderingOptions:
       nextButtonLabel: 'next page'
