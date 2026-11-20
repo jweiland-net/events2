@@ -12,11 +12,6 @@ TYPO3:
             YouTube:
               implementationClassName: 'JWeiland\Events2\Domain\Validator\YouTubeValidator'
           formElementsDefinition:
-            Form:
-              renderingOptions:
-                translation:
-                  translationFiles:
-                    20: 'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf'
             Events2Location:
               implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
               properties:

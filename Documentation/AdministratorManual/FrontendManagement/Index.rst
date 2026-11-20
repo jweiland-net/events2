@@ -238,6 +238,9 @@ Templates of EXT:form
     `SaveEvent.insertedUids.tx_events2_domain_model_event` and
     `SaveEvent.moderationToken`.
 
+The translations of :file:`locallang_ext_form.xlf` are registered in
+:file:`NewEvent.form.yaml`, so they apply to the event form only.
+
 ..  _frontend-management-markup:
 
 Markup of the event form

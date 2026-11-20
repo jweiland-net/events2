@@ -49,6 +49,26 @@ class FormSetupTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function formSetupKeepsTranslationFilesOfCore(): void
+    {
+        self::assertSame(
+            $this->getPrototype([10 => self::CORE_FORM_SETUP])['formElementsDefinition']['Form']['renderingOptions']['translation'],
+            $this->getPrototype([10 => self::CORE_FORM_SETUP, 1661247670 => self::FORM_SETUP])['formElementsDefinition']['Form']['renderingOptions']['translation'],
+        );
+    }
+
+    #[Test]
+    public function eventFormUsesOwnTranslationFile(): void
+    {
+        $formDefinition = Yaml::parseFile(__DIR__ . '/../../../Configuration/Form/NewEvent.form.yaml');
+
+        self::assertSame(
+            'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf',
+            $formDefinition['renderingOptions']['translation']['translationFiles'][20],
+        );
+    }
+
+    #[Test]
     public function formSetupRegistersSaveEventFinisher(): void
     {
         $prototype = $this->getPrototype([10 => self::CORE_FORM_SETUP, 1661247670 => self::FORM_SETUP]);
