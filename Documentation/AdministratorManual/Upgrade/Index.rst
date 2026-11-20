@@ -51,6 +51,12 @@ If you have overridden the mail templates, use the finisher variable
 
     <f:variable name="moderationToken">{finisherVariableProvider.SaveEvent.moderationToken}</f:variable>
 
+The site set `jweiland/events2` depends on the site set `typo3/form` now.
+The frontend configuration of EXT:form (:typoscript:`plugin.tx_form`) is
+part of this set only. Without it, the event form can not be rendered.
+If your site package added `typo3/form` for events2 only, you can remove
+it there.
+
 ..  _upgrade-12-0-0:
 
 Update to version 12.0.0

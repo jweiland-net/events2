@@ -1,2 +1,6 @@
 name: jweiland/events2
 label: Events2
+
+dependencies:
+  # Provides the frontend configuration of EXT:form (plugin.tx_form) for the event form
+  - typo3/form

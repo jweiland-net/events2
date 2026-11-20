@@ -18,6 +18,9 @@ Version 12.0.1
     now, see :ref:`upgrade-12-0-1`. The `SaveEventFinisher` provides the
     `moderationToken` as finisher variable `SaveEvent.moderationToken` for
     the links of the mail.
+*   [BUGFIX] Add the site set `typo3/form` as dependency of the site set
+    `jweiland/events2`. It provides the frontend configuration of EXT:form,
+    which the event form needs.
 
 Version 12.0.0
 ==============
