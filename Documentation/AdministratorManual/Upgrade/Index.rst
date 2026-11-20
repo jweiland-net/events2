@@ -15,6 +15,42 @@ section carefully!
     :local:
     :depth: 1
 
+..  _upgrade-12-0-1:
+
+Update to version 12.0.1
+========================
+
+The form setup :file:`EXT:events2/Configuration/Form/OverrideFormSettings.yaml`
+does not register the mail templates of the event form for the finisher
+`EmailToReceiver` of the prototype `standard` anymore. Before, the mail
+template of events2 was used for all forms of the installation with this
+finisher, e.g. contact forms of editors.
+
+The template name `Default` and the template root path
+`EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/`
+are options of the finisher `EmailToReceiver` in
+:file:`NewEvent.form.yaml` now. If you use your own copy of the form
+definition, add them to the options of this finisher:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    2:
+      identifier: EmailToReceiver
+      options:
+        templateName: Default
+        templateRootPaths:
+          20: 'EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/'
+          # Your own mail templates
+          30: 'EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/'
+
+If you have overridden the mail templates, use the finisher variable
+`SaveEvent.moderationToken` for the `moderationToken` of the links:
+
+..  code-block:: html
+
+    <f:variable name="moderationToken">{finisherVariableProvider.SaveEvent.moderationToken}</f:variable>
+
 ..  _upgrade-12-0-0:
 
 Update to version 12.0.0
