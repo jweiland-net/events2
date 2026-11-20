@@ -689,7 +689,7 @@ of the plugins. Update your overrides and your CSS:
     *   -   `media-heading`
         -   `mb-1`
     *   -   `align-right info-box`
-        -   `text-end`
+        -   removed, the links to create and edit events are left aligned
     *   -   `nav` and `f3-widget-paginator` of the pagination
         -   `pagination`, `page-item` and `page-link`
     *   -   `grid_8 floatleft` and `gridright` of the video

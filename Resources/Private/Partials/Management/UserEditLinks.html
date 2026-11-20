@@ -3,12 +3,12 @@
       data-namespace-typo3-fluid="true">
 
 <f:security.ifHasRole role="{settings.userGroup}">
-    <p class="text-end">
+    <p>
         <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" title="{f:translate(key: 'newEntry')}">
             <span>{f:translate(key: 'newEntry')}</span>
         </f:link.action>
     </p>
-    <p class="text-end">
+    <p>
         <f:link.action action="listMyEvents" controller="Management" pageUid="{settings.pidOfManagementPage}" title="{f:translate(key: 'listMyEvents')}">
             <span>{f:translate(key: 'listMyEvents')}</span>
         </f:link.action>
