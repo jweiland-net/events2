@@ -227,10 +227,11 @@ Templates of EXT:form
     :file:`Resources/Private/FormFramework/`:
     :file:`Partials/Field/Field.html`,
     :file:`Partials/Events2Location.html` and
-    :file:`Templates/Finishers/Email/Default.html` with the text part
-    :file:`Templates/Finishers/Email/Default.txt`. The template root path
-    of the mail is an option of the finisher `EmailToReceiver` in
-    :file:`NewEvent.form.yaml`, so it applies to the event form only.
+    :file:`Templates/Finishers/Email/EventModeration.html` with the text
+    part :file:`Templates/Finishers/Email/EventModeration.txt`. The
+    template name `EventModeration` and the template root path of the mail
+    are options of the finisher `EmailToReceiver` in
+    :file:`NewEvent.form.yaml`, so they apply to the event form only.
     Override the mail templates with an additional entry with a higher key
     in :yaml:`templateRootPaths` of this finisher in your copy of the form
     definition. The finisher `SaveEventFinisher` provides the UID of the
@@ -327,7 +328,7 @@ If you use your own mail template, render rich text elements with the
 ViewHelper, too:
 
 ..  code-block:: html
-    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/Default.html (excerpt)
+    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/EventModeration.html (excerpt)
 
     <f:if condition="{formValue.element.properties.dbMapping.dataType} == 'richText'">
         <f:then>

@@ -45,7 +45,7 @@ Example for the FormatRichTextViewHelper
 ========================================
 
 ..  code-block:: html
-    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/Default.html (excerpt)
+    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/EventModeration.html (excerpt)
 
     {namespace e2=JWeiland\Events2\ViewHelpers}
 
@@ -53,6 +53,6 @@ Example for the FormatRichTextViewHelper
                        value="{formValue.processedValue}"/>
 
 ..  code-block:: text
-    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/Default.txt (excerpt)
+    :caption: EXT:my_sitepackage/Resources/Private/FormFramework/Templates/Finishers/Email/EventModeration.txt (excerpt)
 
     <e2:formatRichText element="{formValue.element}" value="{formValue.processedValue}" format="plaintext"/>

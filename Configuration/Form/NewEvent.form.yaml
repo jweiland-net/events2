@@ -906,7 +906,7 @@ finishers:
       useFluidEmail: 1
       # Template of this form only. Do not register it in the prototype, as
       # it would be used for the mails of all forms of the installation.
-      templateName: Default
+      templateName: EventModeration
       templateRootPaths:
         20: 'EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/'
       # Following values are prefilled with the values from Extension Settings automatically (HOOK)
