@@ -238,8 +238,33 @@ Templates of EXT:form
     `SaveEvent.insertedUids.tx_events2_domain_model_event` and
     `SaveEvent.moderationToken`.
 
+..  _frontend-management-hooks:
+
+Hooks of EXT:form and other forms
+---------------------------------
+
+The hooks of EXT:form are called for all forms of the installation.
+events2 registers the hooks `initializeFormElement` (categories),
+`afterBuildingFinished` (prefill of an edited event) and
+`beforeRendering` (rich text editor and counter of remaining letters).
+They only act on forms, which are built by the
+:php:`\JWeiland\Events2\Domain\Factory\ArrayFormFactory` of events2. The
+factory sets the rendering option `formOwner` to `events2` (see
+:php:`\JWeiland\Events2\Form\FormOwner`). Other forms, e.g. contact forms
+or the forms of other extensions, are not changed, even if they contain
+elements with :yaml:`dataType: richText` or textareas with a
+:html:`maxlength`.
+
 The translations of :file:`locallang_ext_form.xlf` are registered in
 :file:`NewEvent.form.yaml`, so they apply to the event form only.
+
+If you render your own copy of :file:`NewEvent.form.yaml`, use the factory
+of events2, as the `Management` plugin does:
+
+..  code-block:: html
+
+    <formvh:render persistenceIdentifier="EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml"
+                   factoryClass="JWeiland\\Events2\\Domain\\Factory\\ArrayFormFactory"/>
 
 ..  _frontend-management-markup:
 

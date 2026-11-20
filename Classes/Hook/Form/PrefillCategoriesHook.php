@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
+use JWeiland\Events2\Form\FormOwner;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
 /**
  * Prefill EXT:form element of type checkboxes with categories from database.
+ * Only the element "categories" of a form of events2 (see FormOwner) is
+ * prefilled.
  *
  * Only direct children of "settings.rootCategory" are offered. If
  * "settings.new.selectableCategoriesForNewEvents" is missing or empty, all
@@ -53,6 +56,7 @@ readonly class PrefillCategoriesHook
     {
         if (!$formElement instanceof AbstractFormElement
             || $formElement->getUniqueIdentifier() !== self::FORM_ELEMENT_IDENTIFIER
+            || !FormOwner::isRenderableOfEvents2Form($formElement)
         ) {
             return;
         }

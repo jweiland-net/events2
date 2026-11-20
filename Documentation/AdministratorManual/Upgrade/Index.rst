@@ -51,7 +51,9 @@ If you have overridden the mail templates, use the finisher variable
 
     <f:variable name="moderationToken">{finisherVariableProvider.SaveEvent.moderationToken}</f:variable>
 
-The translation file
+The hooks of events2 act on forms of the `ArrayFormFactory` of events2
+only, see :ref:`frontend-management-hooks`. If you render a copy of
+:file:`NewEvent.form.yaml`, use this factory. The translation file
 :file:`locallang_ext_form.xlf` is registered in :file:`NewEvent.form.yaml`
 now. Add it to the :yaml:`renderingOptions` of your copy of the form
 definition:

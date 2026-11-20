@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hook\Form;
 
+use JWeiland\Events2\Form\FormOwner;
 use JWeiland\Events2\Form\RichTextEditorAssets;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use JWeiland\Events2\Sanitizer\RichTextSanitizer;
@@ -20,7 +21,7 @@ use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 
 /**
  * Adds the CKEditor to the rich text elements (dataType "richText"), which
- * are rendered on the current page of the form. So the assets are loaded on
+ * are rendered on the current page of a form of events2 (see FormOwner). So the assets are loaded on
  * these pages only. Each textarea gets its own options as JSON.
  *
  * The toolbar of the editor is based on the tags, which the sanitizer allows
@@ -42,7 +43,8 @@ final readonly class RichTextEditorHook
     public function beforeRendering(FormRuntime $formRuntime, RootRenderableInterface $renderable): void
     {
         if (
-            !$renderable instanceof FormElementInterface
+            !FormOwner::isEvents2Form($formRuntime->getFormDefinition())
+            || !$renderable instanceof FormElementInterface
             || ($renderable->getProperties()['dbMapping']['dataType'] ?? '') !== RichTextFormElementConfigurator::DATA_TYPE
         ) {
             return;

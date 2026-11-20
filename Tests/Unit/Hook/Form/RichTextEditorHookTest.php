@@ -50,6 +50,10 @@ class RichTextEditorHookTest extends UnitTestCase
 
         $this->formRuntime = $this->createMock(FormRuntime::class);
         $this->formRuntime->method('getRequest')->willReturn($this->createMock(Request::class));
+        $formDefinition = new FormDefinition('newEvent');
+        // Forms of events2 are marked by the ArrayFormFactory of events2
+        $formDefinition->setRenderingOption('formOwner', 'events2');
+        $this->formRuntime->method('getFormDefinition')->willReturn($formDefinition);
 
         $this->subject = new RichTextEditorHook($this->richTextEditorAssets, new RichTextSanitizer($this->createEventDispatcher()));
     }

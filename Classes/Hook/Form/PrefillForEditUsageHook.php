@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Converter\RteContentConverter;
+use JWeiland\Events2\Form\FormOwner;
 use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Database\Connection;
@@ -27,7 +28,8 @@ use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
 /**
- * Prefill EXT:form elements with values from requested event record
+ * Prefill EXT:form elements of a form of events2 (see FormOwner) with values
+ * from requested event record
  */
 readonly class PrefillForEditUsageHook
 {
@@ -48,12 +50,16 @@ readonly class PrefillForEditUsageHook
      * This method will be called by Form Framework.
      * It was checked by method_exists() before.
      *
-     * The form could be used outside the ManagementController (e.g. as form
-     * content element). So the access is checked here, too. Else everyone
-     * could read hidden events of other organizers.
+     * The factory of events2 could be used outside the ManagementController,
+     * e.g. in a template of a site package. So the access is checked here,
+     * too. Else everyone could read hidden events of other organizers.
      */
     public function afterBuildingFinished(RenderableInterface $formElement): void
     {
+        if (!FormOwner::isRenderableOfEvents2Form($formElement)) {
+            return;
+        }
+
         $request = $this->getTypo3Request();
         $eventUid = $this->managementAccessService->getEventUid($request);
         if (

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Form\FormOwner;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use JWeiland\Events2\Service\ManagementAccessService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +21,9 @@ use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 
 /**
  * This is a copy of the original EXT:form ArrayFormFactory
- * We add a possibility to modify the finishers before building
+ * We add a possibility to modify the finishers before building. The
+ * rendering option "formOwner" marks the form, so the hooks of events2 act
+ * on forms of this factory only (see FormOwner).
  */
 class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
 {
@@ -40,6 +43,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
         ?string $prototypeName = null,
         ?ServerRequestInterface $request = null,
     ): FormDefinition {
+        $configuration = FormOwner::markConfiguration($configuration);
         $this->addEventUidToFormAction($configuration, $request);
         $this->modifyEmailFinisherConfiguration($configuration);
         $configuration = $this->richTextFormElementConfigurator->configure($configuration, $request);

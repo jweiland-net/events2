@@ -127,6 +127,22 @@ class PrefillCategoriesHookTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * The hook is called for all forms of the installation, also for forms
+     * of the core and of other extensions with the same identifiers
+     */
+    #[Test]
+    public function initializeFormElementWithFormOfOtherOwnerDoesNotSetOptions(): void
+    {
+        foreach (['', 'clubdirectory'] as $formOwner) {
+            $formElement = $this->buildFormElement('categories', $formOwner);
+
+            $this->buildSubject(['rootCategory' => '1'])->initializeFormElement($formElement);
+
+            self::assertArrayNotHasKey('options', $formElement->getProperties());
+        }
+    }
+
     #[Test]
     public function initializeFormElementWithOtherFormElementDoesNotSetOptions(): void
     {
@@ -156,10 +172,17 @@ class PrefillCategoriesHookTest extends FunctionalTestCase
         );
     }
 
-    private function buildFormElement(string $identifier): GenericFormElement
+    /**
+     * @param string $formOwner Rendering option "formOwner". Forms of events2 are marked by its ArrayFormFactory.
+     */
+    private function buildFormElement(string $identifier, string $formOwner = 'events2'): GenericFormElement
     {
         $formElement = new GenericFormElement($identifier, 'MultiCheckbox');
-        $formElement->setParentRenderable(new FormDefinition('newEvent'));
+        $formDefinition = new FormDefinition('newEvent');
+        if ($formOwner !== '') {
+            $formDefinition->setRenderingOption('formOwner', $formOwner);
+        }
+        $formElement->setParentRenderable($formDefinition);
 
         return $formElement;
     }
