@@ -40,6 +40,10 @@ class RemainingLettersHookTest extends UnitTestCase
         $this->remainingLettersAssets->method('getLabel')->willReturn('Noch %s Zeichen');
 
         $this->formRuntime = $this->createMock(FormRuntime::class);
+        $formDefinition = new FormDefinition('newEvent');
+        // Forms of events2 are marked by the ArrayFormFactory of events2
+        $formDefinition->setRenderingOption('formOwner', 'events2');
+        $this->formRuntime->method('getFormDefinition')->willReturn($formDefinition);
 
         $this->subject = new RemainingLettersHook($this->remainingLettersAssets);
     }
@@ -96,7 +100,7 @@ class RemainingLettersHookTest extends UnitTestCase
     private function buildElement(string $type, array $additionalAttributes, string $dataType): GenericFormElement
     {
         $element = new GenericFormElement('short-description', $type);
-        $element->setParentRenderable(new FormDefinition('newEvent'));
+        $element->setParentRenderable($this->formRuntime->getFormDefinition());
         $element->setProperty('dbMapping', ['column' => 'teaser', 'dataType' => $dataType]);
         $element->setProperty('fluidAdditionalAttributes', $additionalAttributes);
 

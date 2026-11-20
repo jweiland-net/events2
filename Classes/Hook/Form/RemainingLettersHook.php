@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hook\Form;
 
+use JWeiland\Events2\Form\FormOwner;
 use JWeiland\Events2\Form\RemainingLettersAssets;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
@@ -20,7 +21,7 @@ use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 /**
  * Adds the counter of remaining letters to each textarea with the attribute
  * "maxlength" ("properties.fluidAdditionalAttributes.maxlength"), which is
- * rendered on the current page of the form. The translated label is added as
+ * rendered on the current page of a form of events2 (see FormOwner). The translated label is added as
  * data attribute. Rich text elements are skipped, as the editor replaces the
  * textarea. Without JavaScript, the maxlength and the validators still apply.
  */
@@ -36,7 +37,11 @@ final readonly class RemainingLettersHook
 
     public function beforeRendering(FormRuntime $formRuntime, RootRenderableInterface $renderable): void
     {
-        if (!$renderable instanceof FormElementInterface || !$this->hasMaxLength($renderable)) {
+        if (
+            !FormOwner::isEvents2Form($formRuntime->getFormDefinition())
+            || !$renderable instanceof FormElementInterface
+            || !$this->hasMaxLength($renderable)
+        ) {
             return;
         }
 

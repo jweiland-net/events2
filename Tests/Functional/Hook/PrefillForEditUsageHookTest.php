@@ -379,6 +379,25 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
     }
 
     /**
+     * The hook is called for all forms of the installation. Forms of the core
+     * and of other extensions are not prefilled, even with an event in the query.
+     */
+    #[Test]
+    public function afterBuildingFinishedWithFormOfOtherOwnerDoesNotPrefillElement(): void
+    {
+        $eventUid = $this->insertEventOfOrganizer();
+        $this->loginFrontendUser(1);
+        $this->setRequestWithEvent($eventUid);
+
+        foreach (['', 'clubdirectory'] as $formOwner) {
+            $formElement = $this->buildFormElement('title', ['dbMapping' => ['column' => 'title']], $formOwner);
+            $this->subject->afterBuildingFinished($formElement);
+
+            self::assertNull($formElement->getDefaultValue());
+        }
+    }
+
+    /**
      * The form could be used outside the management plugin. Nobody may
      * read hidden events of other organizers via the query.
      */
@@ -505,9 +524,15 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
             ->withAttribute('frontend.typoscript', $frontendTypoScript);
     }
 
-    private function buildFormElement(string $identifier, array $properties): GenericFormElement
+    /**
+     * @param string $formOwner Rendering option "formOwner". Forms of events2 are marked by its ArrayFormFactory.
+     */
+    private function buildFormElement(string $identifier, array $properties, string $formOwner = 'events2'): GenericFormElement
     {
         $formDefinition = new FormDefinition('test-form');
+        if ($formOwner !== '') {
+            $formDefinition->setRenderingOption('formOwner', $formOwner);
+        }
         $formElement = new GenericFormElement($identifier, 'Events2Location');
         $formElement->setParentRenderable($formDefinition);
 

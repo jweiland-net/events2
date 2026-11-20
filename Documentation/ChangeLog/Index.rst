@@ -21,6 +21,13 @@ Version 12.0.1
 *   [BUGFIX] Add the site set `typo3/form` as dependency of the site set
     `jweiland/events2`. It provides the frontend configuration of EXT:form,
     which the event form needs.
+*   [BUGFIX] Restrict the hooks of EXT:form to forms of events2. The hooks
+    `initializeFormElement`, `afterBuildingFinished` and `beforeRendering`
+    acted on all forms of the installation. E.g. the rich text editor of
+    events2 was added to rich text elements of other extensions, so a
+    textarea could get several editors. The ArrayFormFactory of events2
+    marks its forms with the rendering option `formOwner`, see
+    :ref:`frontend-management-hooks`.
 *   [BUGFIX] Translate the event form only with
     :file:`locallang_ext_form.xlf`. It was registered for all forms of the
     installation and translated elements of other forms with the same
