@@ -87,6 +87,18 @@ setting `events2.form.richText.translationsPath`.
 Its method :php:`load()` and the constant :php:`JAVASCRIPT_MODULE` do not
 exist anymore.
 
+Textareas with a :html:`maxlength`, e.g. the teaser, are rendered with the
+new partial :file:`RemainingLetters/Textarea.html`, which loads the
+JavaScript module of the counter of remaining letters with the partial
+:file:`RemainingLetters/LoadAssets.html`, see
+:ref:`frontend-management-remaining-letters`. If your copy of
+:file:`NewEvent.form.yaml` sets another :yaml:`templateName` for such a
+textarea, render :file:`RemainingLetters/LoadAssets.html` in your partial.
+:php:`RemainingLettersAssets` has been replaced by
+:php:`RemainingLettersOptions`, which provides the label of the counter
+only. Its method :php:`load()` and the constant :php:`JAVASCRIPT_MODULE`
+do not exist anymore.
+
 The site set `jweiland/events2` depends on the site set `typo3/form` now.
 The frontend configuration of EXT:form (:typoscript:`plugin.tx_form`) is
 part of this set only. Without it, the event form can not be rendered.
