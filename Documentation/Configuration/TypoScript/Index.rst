@@ -290,6 +290,28 @@ Comma-separated identifiers of the form elements which get the rich text
 editor. Elements with :yaml:`dataType: richText` in the form definition get
 the editor, too. See :ref:`frontend-rich-text-editor-elements`.
 
+..  _typoscript-new-richtext-translationspath:
+
+richText.translationsPath
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+..  versionadded:: 12.0.1
+
+    The value is set by the new site setting
+    :confval:`events2.form.richText.translationsPath <events2-form-richtext-translationspath>`.
+
+Default: `EXT:rte_ckeditor/Resources/Public/Contrib/translations/`
+
+Example:
+
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+    plugin.tx_events2.settings.new.richText.translationsPath = EXT:my_sitepackage/Resources/Public/Ckeditor/Translations/
+
+Folder with the translations of the user interface of CKEditor 5, see
+:ref:`frontend-rich-text-editor-assets`.
+
 latest
 ------
 

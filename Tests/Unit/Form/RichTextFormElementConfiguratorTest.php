@@ -135,6 +135,45 @@ class RichTextFormElementConfiguratorTest extends UnitTestCase
     }
 
     #[Test]
+    public function configureRendersRichTextElementWithPartialOfEditor(): void
+    {
+        $configuration = $this->subject->configure($this->getFormDefinition(), $this->buildRequest('1'));
+        $element = $this->findElement($configuration, 'detail-description');
+
+        self::assertSame('RichTextEditor/Textarea', $element['renderingOptions']['templateName']);
+        self::assertSame(
+            'EXT:rte_ckeditor/Resources/Public/Contrib/translations/',
+            $element['properties']['richTextEditor']['translationsPath'],
+        );
+    }
+
+    #[Test]
+    public function configureKeepsPartialAndTranslationsPathOfFormDefinition(): void
+    {
+        $formDefinition = $this->addProgramElement($this->getFormDefinition(), ['convertPlainTextToHtml' => true]);
+        foreach ($formDefinition['renderables'][1]['renderables'] as $key => $renderable) {
+            if ($renderable['identifier'] === 'program') {
+                $formDefinition['renderables'][1]['renderables'][$key]['renderingOptions']['templateName'] = 'MyRichText';
+                $formDefinition['renderables'][1]['renderables'][$key]['properties']['richTextEditor']['translationsPath'] = 'EXT:my_sitepackage/Translations/';
+            }
+        }
+
+        $program = $this->findElement($this->subject->configure($formDefinition, $this->buildRequest('1')), 'program');
+
+        self::assertSame('MyRichText', $program['renderingOptions']['templateName']);
+        self::assertSame('EXT:my_sitepackage/Translations/', $program['properties']['richTextEditor']['translationsPath']);
+    }
+
+    #[Test]
+    public function configureWhileDisabledRendersPlainTextarea(): void
+    {
+        $element = $this->findElement($this->subject->configure($this->getFormDefinition(), $this->buildRequest('0')), 'detail-description');
+
+        self::assertArrayNotHasKey('templateName', $element['renderingOptions'] ?? []);
+        self::assertArrayNotHasKey('richTextEditor', $element['properties']);
+    }
+
+    #[Test]
     public function configureKeepsOtherElements(): void
     {
         $formDefinition = $this->getFormDefinition();
@@ -240,6 +279,7 @@ class RichTextFormElementConfiguratorTest extends UnitTestCase
                             'richText.' => [
                                 'enable' => $enable,
                                 'elements' => $elements,
+                                'translationsPath' => 'EXT:rte_ckeditor/Resources/Public/Contrib/translations/',
                             ],
                         ],
                     ],
