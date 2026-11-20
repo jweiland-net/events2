@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Hook\Form;
 
-use JWeiland\Events2\Form\RemainingLettersAssets;
+use JWeiland\Events2\Form\RemainingLettersOptions;
 use JWeiland\Events2\Hook\Form\RemainingLettersHook;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -26,7 +26,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class RemainingLettersHookTest extends UnitTestCase
 {
-    private RemainingLettersAssets&MockObject $remainingLettersAssets;
+    private RemainingLettersOptions&MockObject $remainingLettersOptions;
 
     private FormRuntime&MockObject $formRuntime;
 
@@ -36,8 +36,8 @@ class RemainingLettersHookTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->remainingLettersAssets = $this->createMock(RemainingLettersAssets::class);
-        $this->remainingLettersAssets->method('getLabel')->willReturn('Noch %s Zeichen');
+        $this->remainingLettersOptions = $this->createMock(RemainingLettersOptions::class);
+        $this->remainingLettersOptions->method('getLabel')->willReturn('Noch %s Zeichen');
 
         $this->formRuntime = $this->createMock(FormRuntime::class);
         $formDefinition = new FormDefinition('newEvent');
@@ -45,14 +45,13 @@ class RemainingLettersHookTest extends UnitTestCase
         $formDefinition->setRenderingOption('formOwner', 'events2');
         $this->formRuntime->method('getFormDefinition')->willReturn($formDefinition);
 
-        $this->subject = new RemainingLettersHook($this->remainingLettersAssets);
+        $this->subject = new RemainingLettersHook($this->remainingLettersOptions);
     }
 
     #[Test]
     public function beforeRenderingAddsLabelToTextareaWithMaxLength(): void
     {
         $element = $this->buildElement('Textarea', ['maxlength' => 255], 'plainText');
-        $this->remainingLettersAssets->expects(self::once())->method('load');
 
         $this->subject->beforeRendering($this->formRuntime, $element);
 
@@ -82,7 +81,7 @@ class RemainingLettersHookTest extends UnitTestCase
         string $dataType,
     ): void {
         $element = $this->buildElement($type, $additionalAttributes, $dataType);
-        $this->remainingLettersAssets->expects(self::never())->method('load');
+        $this->remainingLettersOptions->expects(self::never())->method('getLabel');
 
         $this->subject->beforeRendering($this->formRuntime, $element);
 
@@ -92,7 +91,7 @@ class RemainingLettersHookTest extends UnitTestCase
     #[Test]
     public function beforeRenderingIgnoresFormDefinition(): void
     {
-        $this->remainingLettersAssets->expects(self::never())->method('load');
+        $this->remainingLettersOptions->expects(self::never())->method('getLabel');
 
         $this->subject->beforeRendering($this->formRuntime, new FormDefinition('newEvent'));
     }

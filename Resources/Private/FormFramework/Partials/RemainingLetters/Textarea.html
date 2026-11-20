@@ -1,0 +1,34 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment>
+    <!--
+    Textarea with the counter of remaining letters. Based on the partial
+    Textarea.html of the template variant "version2" of EXT:form.
+    Additionally loads the JavaScript module of the counter with the partial
+    RemainingLetters/LoadAssets.html.
+    -->
+</f:comment>
+<formvh:renderRenderable renderable="{element}">
+    <f:form.validationResults for="{element.rootForm.identifier}.{element.identifier}">
+        <f:if condition="{element.properties.elementDescription}">
+            <f:variable name="aria" value="{describedby: '{element.uniqueIdentifier}-desc'}"/>
+        </f:if>
+        <f:if condition="{validationResults.errors}">
+            <f:variable name="aria" value="{invalid: 'true', describedby: '{element.uniqueIdentifier}-errors'}"/>
+        </f:if>
+
+        <f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
+            <f:form.textarea
+                property="{element.identifier}"
+                id="{element.uniqueIdentifier}"
+                class="{element.properties.elementClassAttribute}"
+                rows="{element.properties.rows}"
+                cols="{element.properties.cols}"
+                errorClass="{element.rootForm.renderingOptions.fieldProperties.errorClassAttribute}"
+                additionalAttributes="{formvh:translateElementProperty(element: element, property: 'fluidAdditionalAttributes')}"
+                aria="{aria}"
+            />
+        </f:render>
+        <f:render partial="RemainingLetters/LoadAssets" arguments="{element: element}"/>
+    </f:form.validationResults>
+</formvh:renderRenderable>
+</html>

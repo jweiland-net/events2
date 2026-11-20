@@ -18,6 +18,12 @@ Version 12.0.1
     `events2.form.richText.translationsPath`. :php:`RichTextEditorAssets`
     is replaced by :php:`RichTextEditorOptions`. See
     :ref:`frontend-rich-text-editor-assets`.
+*   [BUGFIX] Load the JavaScript module of the counter of remaining letters
+    with the Fluid partials :file:`RemainingLetters/Textarea.html` and
+    :file:`RemainingLetters/LoadAssets.html` of the event form instead of
+    PHP, so integrators can override it. :php:`RemainingLettersAssets` is
+    replaced by :php:`RemainingLettersOptions`. See
+    :ref:`frontend-management-remaining-letters`.
 *   [BUGFIX] Use the mail templates of events2 for the event form only.
     :file:`OverrideFormSettings.yaml` registered them for the finisher
     `EmailToReceiver` of the prototype `standard`, so all forms of the

@@ -12,17 +12,20 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook\Form;
 
 use JWeiland\Events2\Form\FormOwner;
-use JWeiland\Events2\Form\RemainingLettersAssets;
+use JWeiland\Events2\Form\RemainingLettersOptions;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RootRenderableInterface;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 
 /**
- * Adds the counter of remaining letters to each textarea with the attribute
- * "maxlength" ("properties.fluidAdditionalAttributes.maxlength"), which is
- * rendered on the current page of a form of events2 (see FormOwner). The translated label is added as
- * data attribute. Rich text elements are skipped, as the editor replaces the
+ * Adds the translated label of the counter of remaining letters as data
+ * attribute to each textarea with the attribute "maxlength"
+ * ("properties.fluidAdditionalAttributes.maxlength"), which is rendered on
+ * the current page of a form of events2 (see FormOwner). The partial
+ * RemainingLetters/Textarea.html renders the textarea and loads the
+ * JavaScript module with the partial RemainingLetters/LoadAssets.html, see
+ * RemainingLettersFormElementConfigurator. Rich text elements are skipped, as the editor replaces the
  * textarea. Without JavaScript, the maxlength and the validators still apply.
  */
 final readonly class RemainingLettersHook
@@ -32,7 +35,7 @@ final readonly class RemainingLettersHook
     private const FORM_ELEMENT_TYPE = 'Textarea';
 
     public function __construct(
-        private RemainingLettersAssets $remainingLettersAssets,
+        private RemainingLettersOptions $remainingLettersOptions,
     ) {}
 
     public function beforeRendering(FormRuntime $formRuntime, RootRenderableInterface $renderable): void
@@ -46,9 +49,8 @@ final readonly class RemainingLettersHook
         }
 
         $renderable->setProperty('fluidAdditionalAttributes', [
-            self::DATA_ATTRIBUTE => $this->remainingLettersAssets->getLabel(),
+            self::DATA_ATTRIBUTE => $this->remainingLettersOptions->getLabel(),
         ]);
-        $this->remainingLettersAssets->load();
     }
 
     private function hasMaxLength(FormElementInterface $formElement): bool

@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Form\FormOwner;
+use JWeiland\Events2\Form\RemainingLettersFormElementConfigurator;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use JWeiland\Events2\Service\ManagementAccessService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,6 +32,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
         protected readonly ExtConf $extConf,
         protected readonly RichTextFormElementConfigurator $richTextFormElementConfigurator,
         protected readonly ManagementAccessService $managementAccessService,
+        protected readonly RemainingLettersFormElementConfigurator $remainingLettersFormElementConfigurator,
     ) {}
 
     /**
@@ -47,6 +49,8 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
         $this->addEventUidToFormAction($configuration, $request);
         $this->modifyEmailFinisherConfiguration($configuration);
         $configuration = $this->richTextFormElementConfigurator->configure($configuration, $request);
+        // After the rich text elements are known, as they do not get the counter
+        $configuration = $this->remainingLettersFormElementConfigurator->configure($configuration);
 
         return parent::build($configuration, $prototypeName, $request);
     }

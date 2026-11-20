@@ -267,6 +267,48 @@ of events2, as the `Management` plugin does:
     <formvh:render persistenceIdentifier="EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml"
                    factoryClass="JWeiland\\Events2\\Domain\\Factory\\ArrayFormFactory"/>
 
+..  _frontend-management-remaining-letters:
+
+Counter of remaining letters
+----------------------------
+
+..  versionchanged:: 12.0.1
+
+    The JavaScript module of the counter is loaded by a Fluid partial
+    instead of PHP, so it can be overridden.
+
+Textareas of the event form with the attribute :html:`maxlength`
+(:yaml:`properties.fluidAdditionalAttributes.maxlength`), e.g. the teaser,
+show the remaining letters below the field. Rich text elements are
+skipped. These textareas are rendered with the partial
+:file:`EXT:events2/Resources/Private/FormFramework/Partials/RemainingLetters/Textarea.html`
+(:yaml:`renderingOptions.templateName`). It is based on the partial
+:file:`Textarea.html` of EXT:form and renders the partial
+:file:`RemainingLetters/LoadAssets.html`, which loads the ES module
+`@jweiland/events2/remaining-letters.js`
+(:file:`EXT:events2/Resources/Public/JavaScript/remaining-letters.js`) with
+:html:`<f:asset.module>`. The module is mapped in
+:file:`EXT:events2/Configuration/JavaScriptModules.php`. The textarea gets
+the translated label (label `remainingLetters`) in the attribute
+:html:`data-events2-remaining-letters`.
+
+To load an own module, copy :file:`RemainingLetters/LoadAssets.html` into
+your site package and add your partial root path with a higher key, either
+in your copy of :file:`NewEvent.form.yaml` or with TypoScript:
+
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySitepackage/setup.typoscript
+
+    plugin.tx_events2.settings.overrideForm {
+      renderingOptions.partialRootPaths.1800000000 = EXT:my_sitepackage/Resources/Private/FormFramework/Partials/
+    }
+
+Register your module in :file:`Configuration/JavaScriptModules.php` of your
+site package and use its identifier in :html:`<f:asset.module>`. To render
+a single textarea with another partial, set
+:yaml:`renderingOptions.templateName` of the element in your copy of the
+form definition.
+
 ..  _frontend-management-markup:
 
 Markup of the event form
