@@ -190,14 +190,7 @@ class SaveEventFinisher extends AbstractFinisher
     protected function processEventTable(int $iterationCount): void
     {
         $uid = $this->getEventUidToUpdate();
-
-        // I need event UID for EmailToReceiver. Options are not accessible anymore:
-        // See: https://forge.typo3.org/issues/98241
-        $this->finisherContext->getFinisherVariableProvider()->add(
-            $this->shortFinisherIdentifier,
-            'insertedUids.tx_events2_domain_model_event',
-            $uid,
-        );
+        $this->addEventToFinisherVariables($uid);
 
         $this->finisherContext->getFinisherVariableProvider()->add(
             $this->shortFinisherIdentifier,
@@ -211,6 +204,26 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid' => $uid,
             ];
         }
+    }
+
+    /**
+     * The mail of the EmailToReceiver finisher needs the UID of the event
+     * and the "moderationToken" of its signed links. Options of other
+     * finishers are not accessible there: https://forge.typo3.org/issues/98241
+     */
+    protected function addEventToFinisherVariables(int $eventUid): void
+    {
+        $finisherVariableProvider = $this->finisherContext->getFinisherVariableProvider();
+        $finisherVariableProvider->add(
+            $this->shortFinisherIdentifier,
+            'insertedUids.tx_events2_domain_model_event',
+            $eventUid,
+        );
+        $finisherVariableProvider->add(
+            $this->shortFinisherIdentifier,
+            'moderationToken',
+            $eventUid > 0 ? $this->getManagementAccessService()->generateModerationToken($eventUid) : '',
+        );
     }
 
     /**
@@ -554,13 +567,7 @@ class SaveEventFinisher extends AbstractFinisher
             );
 
             if ($table === 'tx_events2_domain_model_event') {
-                // I need event UID for EmailToReceiver. Options are not accessible anymore:
-                // See: https://forge.typo3.org/issues/98241
-                $this->finisherContext->getFinisherVariableProvider()->add(
-                    $this->shortFinisherIdentifier,
-                    'insertedUids.tx_events2_domain_model_event',
-                    $lastInsertId,
-                );
+                $this->addEventToFinisherVariables($lastInsertId);
             }
         }
 

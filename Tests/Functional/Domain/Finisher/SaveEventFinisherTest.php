@@ -14,13 +14,18 @@ namespace JWeiland\Events2\Tests\Functional\Domain\Finisher;
 use JWeiland\Events2\Domain\Finisher\SaveEventFinisher;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Service\RichTextService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Form\Domain\Finishers\FinisherContext;
+use TYPO3\CMS\Form\Domain\Finishers\FinisherVariableProvider;
 use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
+use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -62,6 +67,30 @@ class SaveEventFinisherTest extends FunctionalTestCase
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Events2PageTree.csv');
+    }
+
+    #[Test]
+    public function addEventToFinisherVariablesAddsUidAndModerationTokenOfEvent(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event of the mail',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
+
+        $finisherVariableProvider = $this->addEventToFinisherVariables($eventUid);
+
+        self::assertSame($eventUid, $finisherVariableProvider->get('SaveEvent', 'insertedUids.tx_events2_domain_model_event'));
+        self::assertNotSame('', $finisherVariableProvider->get('SaveEvent', 'moderationToken'));
+        self::assertSame(
+            $this->get(ManagementAccessService::class)->generateModerationToken($eventUid),
+            $finisherVariableProvider->get('SaveEvent', 'moderationToken'),
+        );
+    }
+
+    #[Test]
+    public function addEventToFinisherVariablesWithoutEventAddsEmptyModerationToken(): void
+    {
+        self::assertSame('', $this->addEventToFinisherVariables(0)->get('SaveEvent', 'moderationToken'));
     }
 
     #[Test]
@@ -132,6 +161,23 @@ class SaveEventFinisherTest extends FunctionalTestCase
     /**
      * @param array<string, mixed> $mapping Mapping of the description in the finisher
      */
+    private function addEventToFinisherVariables(int $eventUid): FinisherVariableProvider
+    {
+        $subject = new SaveEventFinisher(
+            $this->get(ConnectionPool::class),
+            $this->get(PathSegmentHelper::class),
+            $this->get(DayRelationService::class),
+            managementAccessService: $this->get(ManagementAccessService::class),
+        );
+        $subject->setFinisherIdentifier('SaveEventFinisher');
+        $finisherContext = new FinisherContext($this->createMock(FormRuntime::class), $this->createMock(Request::class));
+        (new \ReflectionProperty($subject, 'finisherContext'))->setValue($subject, $finisherContext);
+
+        (new \ReflectionMethod($subject, 'addEventToFinisherVariables'))->invoke($subject, $eventUid);
+
+        return $finisherContext->getFinisherVariableProvider();
+    }
+
     private function prepareDescription(array $mapping, string $value): string
     {
         return $this->prepareData(

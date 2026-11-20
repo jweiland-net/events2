@@ -7,6 +7,18 @@
 ChangeLog
 =========
 
+Version 12.0.1
+==============
+
+*   [BUGFIX] Use the mail templates of events2 for the event form only.
+    :file:`OverrideFormSettings.yaml` registered them for the finisher
+    `EmailToReceiver` of the prototype `standard`, so all forms of the
+    installation sent the moderation mail of events2. The template name
+    and root path are options of the finisher in :file:`NewEvent.form.yaml`
+    now, see :ref:`upgrade-12-0-1`. The `SaveEventFinisher` provides the
+    `moderationToken` as finisher variable `SaveEvent.moderationToken` for
+    the links of the mail.
+
 Version 12.0.0
 ==============
 

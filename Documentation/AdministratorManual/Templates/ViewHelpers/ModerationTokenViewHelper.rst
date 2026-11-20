@@ -14,8 +14,13 @@ valid `moderationToken` or for backend administrators. See
 :ref:`frontend-management-access`.
 
 Use this ViewHelper in templates without a controller, which could assign
-the token, e.g. the mail template of the EmailToReceiver finisher of
-EXT:form. It returns an empty string, if the event does not exist.
+the token. It returns an empty string, if the event does not exist.
+
+..  versionchanged:: 12.0.1
+
+    The mail template of the EmailToReceiver finisher of the event form
+    uses the finisher variable `SaveEvent.moderationToken` of the
+    `SaveEventFinisher` instead of this ViewHelper.
 
 ..  versionchanged:: 12.0.0
 

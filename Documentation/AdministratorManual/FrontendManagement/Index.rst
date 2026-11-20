@@ -228,8 +228,15 @@ Templates of EXT:form
     :file:`Partials/Field/Field.html`,
     :file:`Partials/Events2Location.html` and
     :file:`Templates/Finishers/Email/Default.html` with the text part
-    :file:`Templates/Finishers/Email/Default.txt`. Override them in your
-    copy of the form definition or in the EXT:form configuration.
+    :file:`Templates/Finishers/Email/Default.txt`. The template root path
+    of the mail is an option of the finisher `EmailToReceiver` in
+    :file:`NewEvent.form.yaml`, so it applies to the event form only.
+    Override the mail templates with an additional entry with a higher key
+    in :yaml:`templateRootPaths` of this finisher in your copy of the form
+    definition. The finisher `SaveEventFinisher` provides the UID of the
+    event and the token of the links as finisher variables
+    `SaveEvent.insertedUids.tx_events2_domain_model_event` and
+    `SaveEvent.moderationToken`.
 
 ..  _frontend-management-markup:
 
