@@ -81,15 +81,15 @@ class FormSetupTest extends FunctionalTestCase
     {
         $options = $this->getEmailFinisherOptionsOfEventForm();
 
-        self::assertSame('Default', $options['templateName']);
+        self::assertSame('EventModeration', $options['templateName']);
         self::assertSame(self::TEMPLATE_PATH, end($options['templateRootPaths']));
 
         $templatePaths = new TemplatePaths();
         $templatePaths->setTemplateRootPaths(array_map(GeneralUtility::getFileAbsFileName(...), $options['templateRootPaths']));
         foreach (['html', 'txt'] as $format) {
             self::assertSame(
-                GeneralUtility::getFileAbsFileName(self::TEMPLATE_PATH . 'Default.' . $format),
-                $templatePaths->resolveTemplateFileForControllerAndActionAndFormat('Default', 'Default', $format),
+                GeneralUtility::getFileAbsFileName(self::TEMPLATE_PATH . 'EventModeration.' . $format),
+                $templatePaths->resolveTemplateFileForControllerAndActionAndFormat('Default', 'EventModeration', $format),
             );
         }
     }
@@ -98,7 +98,7 @@ class FormSetupTest extends FunctionalTestCase
     public function mailTemplateUsesModerationTokenOfFinisher(): void
     {
         foreach (['html', 'txt'] as $format) {
-            $template = (string)file_get_contents(GeneralUtility::getFileAbsFileName(self::TEMPLATE_PATH . 'Default.' . $format));
+            $template = (string)file_get_contents(GeneralUtility::getFileAbsFileName(self::TEMPLATE_PATH . 'EventModeration.' . $format));
 
             self::assertStringContainsString('{finisherVariableProvider.SaveEvent.moderationToken}', $template);
         }

@@ -26,7 +26,13 @@ does not register the mail templates of the event form for the finisher
 template of events2 was used for all forms of the installation with this
 finisher, e.g. contact forms of editors.
 
-The template name `Default` and the template root path
+The mail templates are renamed from :file:`Default.html` and
+:file:`Default.txt` to :file:`EventModeration.html` and
+:file:`EventModeration.txt`, so other forms or extensions overriding the
+generic template name `Default` do not replace the moderation mail of
+events2. If you have overridden the mail templates, rename your copies.
+
+The template name `EventModeration` and the template root path
 `EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/`
 are options of the finisher `EmailToReceiver` in
 :file:`NewEvent.form.yaml` now. If you use your own copy of the form
@@ -38,7 +44,7 @@ definition, add them to the options of this finisher:
     2:
       identifier: EmailToReceiver
       options:
-        templateName: Default
+        templateName: EventModeration
         templateRootPaths:
           20: 'EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/'
           # Your own mail templates

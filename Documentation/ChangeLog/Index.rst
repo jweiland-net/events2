@@ -18,6 +18,10 @@ Version 12.0.1
     now, see :ref:`upgrade-12-0-1`. The `SaveEventFinisher` provides the
     `moderationToken` as finisher variable `SaveEvent.moderationToken` for
     the links of the mail.
+*   [BUGFIX] Rename the mail templates of the event form to
+    :file:`EventModeration.html` and :file:`EventModeration.txt`, so
+    overrides of the generic template name `Default` of other forms do not
+    replace the moderation mail of events2.
 *   [BUGFIX] Add the site set `typo3/form` as dependency of the site set
     `jweiland/events2`. It provides the frontend configuration of EXT:form,
     which the event form needs.
