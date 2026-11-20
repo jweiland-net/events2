@@ -36,6 +36,8 @@ Version 12.0.1
     :file:`locallang_ext_form.xlf`. It was registered for all forms of the
     installation and translated elements of other forms with the same
     identifiers, e.g. `title`.
+*   [TASK] Render the links to create, list and edit events left aligned,
+    like the links of yellowpages2 and clubdirectory.
 
 Version 12.0.0
 ==============
