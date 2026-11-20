@@ -24,13 +24,13 @@
 
 <f:section name="NewEdit">
     <f:security.ifHasRole role="{settings.userGroup}">
-        <p class="text-end">
+        <p>
             <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" title="{f:translate(key: 'newEntry')}">
                 {f:translate(key: 'newEntry')}
             </f:link.action>
         </p>
         <f:if condition="{event.isCurrentUserAllowedOrganizer}">
-            <p class="text-end">
+            <p>
                 <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" arguments="{event: event, timestamp: '0'}" title="{f:translate(key: 'update')}">
                     {f:translate(key: 'update')}
                 </f:link.action>

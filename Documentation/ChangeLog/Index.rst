@@ -74,7 +74,7 @@ This version contains breaking changes, please read
     :ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`.
 *   [!!!][TASK] Use the classes of Bootstrap 5 in all frontend templates
     and partials, for example `row mb-3`, `col-form-label`,
-    `form-select`, `img-fluid`, `text-end` and `pagination`. Icon spans
+    `form-select`, `img-fluid` and `pagination`. Icon spans
     of `glyphicon` and `icon-arrowright` are removed. See
     :ref:`upgrade-12-0-0-bootstrap`.
 *   [!!!][TASK] Render the event form with the template variant
