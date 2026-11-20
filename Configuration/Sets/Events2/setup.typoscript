@@ -106,6 +106,8 @@ plugin.tx_events2 {
         enable = {$events2.form.richText.enable}
         # Comma separated identifiers of form elements
         elements = {$events2.form.richText.elements}
+        # Folder with the translations of CKEditor 5 like de.js
+        translationsPath = {$events2.form.richText.translationsPath}
       }
     }
 

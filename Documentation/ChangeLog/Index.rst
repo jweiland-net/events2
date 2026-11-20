@@ -10,6 +10,14 @@ ChangeLog
 Version 12.0.1
 ==============
 
+*   [BUGFIX] Load the assets of the frontend rich text editor with the
+    Fluid partials :file:`RichTextEditor/Textarea.html` and
+    :file:`RichTextEditor/LoadAssets.html` of the event form instead of
+    PHP, so integrators can override the ES module and the style sheets.
+    The folder of the translations of CKEditor is the new site setting
+    `events2.form.richText.translationsPath`. :php:`RichTextEditorAssets`
+    is replaced by :php:`RichTextEditorOptions`. See
+    :ref:`frontend-rich-text-editor-assets`.
 *   [BUGFIX] Use the mail templates of events2 for the event form only.
     :file:`OverrideFormSettings.yaml` registered them for the finisher
     `EmailToReceiver` of the prototype `standard`, so all forms of the

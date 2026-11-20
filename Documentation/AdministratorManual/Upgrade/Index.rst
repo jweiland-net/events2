@@ -72,6 +72,21 @@ definition:
         translationFiles:
           20: 'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf'
 
+Rich text elements of the event form are rendered with the new partial
+:file:`RichTextEditor/Textarea.html` (:yaml:`renderingOptions.templateName`),
+which loads the assets of the editor with the partial
+:file:`RichTextEditor/LoadAssets.html`, see
+:ref:`frontend-rich-text-editor-assets`. If your copy of
+:file:`NewEvent.form.yaml` sets another :yaml:`templateName` for a rich
+text element, render the partial :file:`RichTextEditor/LoadAssets.html` in
+your partial. The folder of the translations of CKEditor is the new site
+setting `events2.form.richText.translationsPath`.
+
+:php:`RichTextEditorAssets` has been replaced by
+:php:`RichTextEditorOptions`, which builds the options of the editor only.
+Its method :php:`load()` and the constant :php:`JAVASCRIPT_MODULE` do not
+exist anymore.
+
 The site set `jweiland/events2` depends on the site set `typo3/form` now.
 The frontend configuration of EXT:form (:typoscript:`plugin.tx_form`) is
 part of this set only. Without it, the event form can not be rendered.

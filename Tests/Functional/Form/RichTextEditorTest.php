@@ -126,6 +126,27 @@ class RichTextEditorTest extends FunctionalTestCase
         self::assertStringContainsString('Css/RichTextEditor.css', $content);
     }
 
+    #[Test]
+    public function richTextElementGetsTranslationOfSiteLanguage(): void
+    {
+        $content = $this->renderForm(['enable' => true, 'elements' => 'choose-event-type']);
+
+        // The slashes are escaped in JSON
+        self::assertStringContainsString('rte_ckeditor\\/Resources\\/Public\\/Contrib\\/translations\\/de.js&quot;', $content);
+    }
+
+    #[Test]
+    public function richTextElementWithoutTranslationInConfiguredFolderUsesEnglish(): void
+    {
+        $content = $this->renderForm([
+            'enable' => true,
+            'elements' => 'choose-event-type',
+            'translationsPath' => 'EXT:events2/Resources/Public/JavaScript/',
+        ]);
+
+        self::assertStringContainsString('&quot;translationUrl&quot;:&quot;&quot;', $content);
+    }
+
     /**
      * @param array<string, mixed> $richTextSettings Site settings "events2.form.richText.*"
      */

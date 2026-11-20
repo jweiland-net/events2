@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Hook\Form;
 
 use JWeiland\Events2\Event\ModifyRichTextSanitizerConfigurationEvent;
-use JWeiland\Events2\Form\RichTextEditorAssets;
+use JWeiland\Events2\Form\RichTextEditorOptions;
 use JWeiland\Events2\Hook\Form\RichTextEditorHook;
 use JWeiland\Events2\Sanitizer\RichTextSanitizer;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,7 +28,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class RichTextEditorHookTest extends UnitTestCase
 {
-    private RichTextEditorAssets $richTextEditorAssets;
+    private RichTextEditorOptions $richTextEditorOptions;
 
     private FormRuntime $formRuntime;
 
@@ -43,8 +43,8 @@ class RichTextEditorHookTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->richTextEditorAssets = $this->createMock(RichTextEditorAssets::class);
-        $this->richTextEditorAssets
+        $this->richTextEditorOptions = $this->createMock(RichTextEditorOptions::class);
+        $this->richTextEditorOptions
             ->method('getEditorOptions')
             ->willReturnOnConsecutiveCalls(['language' => 'de'], ['language' => 'en']);
 
@@ -55,7 +55,7 @@ class RichTextEditorHookTest extends UnitTestCase
         $formDefinition->setRenderingOption('formOwner', 'events2');
         $this->formRuntime->method('getFormDefinition')->willReturn($formDefinition);
 
-        $this->subject = new RichTextEditorHook($this->richTextEditorAssets, new RichTextSanitizer($this->createEventDispatcher()));
+        $this->subject = new RichTextEditorHook($this->richTextEditorOptions, new RichTextSanitizer($this->createEventDispatcher()));
     }
 
     private function createEventDispatcher(): EventDispatcherInterface
@@ -84,7 +84,7 @@ class RichTextEditorHookTest extends UnitTestCase
     public function beforeRenderingPassesConfigurationOfColumnToEditorOptions(): void
     {
         $element = $this->buildElement('detail-description', 'richText');
-        $this->richTextEditorAssets
+        $this->richTextEditorOptions
             ->expects(self::once())
             ->method('getEditorOptions')
             ->with(
@@ -103,7 +103,6 @@ class RichTextEditorHookTest extends UnitTestCase
     public function beforeRenderingAddsEditorToRichTextElement(): void
     {
         $element = $this->buildElement('detail-description', 'richText');
-        $this->richTextEditorAssets->expects(self::once())->method('load');
 
         $this->subject->beforeRendering($this->formRuntime, $element);
 
@@ -118,7 +117,6 @@ class RichTextEditorHookTest extends UnitTestCase
     {
         $firstElement = $this->buildElement('detail-description', 'richText');
         $secondElement = $this->buildElement('program', 'richText');
-        $this->richTextEditorAssets->expects(self::exactly(2))->method('load');
 
         $this->subject->beforeRendering($this->formRuntime, $firstElement);
         $this->subject->beforeRendering($this->formRuntime, $secondElement);
@@ -131,7 +129,7 @@ class RichTextEditorHookTest extends UnitTestCase
     public function beforeRenderingIgnoresPlainTextElement(): void
     {
         $element = $this->buildElement('short-description', 'plainText');
-        $this->richTextEditorAssets->expects(self::never())->method('load');
+        $this->richTextEditorOptions->expects(self::never())->method('getEditorOptions');
 
         $this->subject->beforeRendering($this->formRuntime, $element);
 
@@ -141,7 +139,7 @@ class RichTextEditorHookTest extends UnitTestCase
     #[Test]
     public function beforeRenderingIgnoresFormDefinition(): void
     {
-        $this->richTextEditorAssets->expects(self::never())->method('load');
+        $this->richTextEditorOptions->expects(self::never())->method('getEditorOptions');
 
         $this->subject->beforeRendering($this->formRuntime, new FormDefinition('newEvent'));
     }

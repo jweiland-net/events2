@@ -130,3 +130,9 @@ settings:
     description: 'Comma separated identifiers of form elements, which get the rich text editor. Elements with "dataType: richText" in the form definition get it, too.'
     type: string
     default: 'detail-description'
+  events2.form.richText.translationsPath:
+    label: 'Translations of the rich text editor'
+    category: 'events2.form'
+    description: 'Folder with the translations of CKEditor 5 (e.g. de.js) for the language of the site. Without a translation, the editor is shown in English.'
+    type: string
+    default: 'EXT:rte_ckeditor/Resources/Public/Contrib/translations/'
