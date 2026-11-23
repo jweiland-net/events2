@@ -7,6 +7,14 @@
 ChangeLog
 =========
 
+Version 12.0.2
+==============
+
+*   [BUGFIX] Render the links and texts of the text part of the
+    moderation mail (:file:`EventModeration.txt`) without HTML entities. The
+    links contained `&amp;` instead of `&`, so the copied links did not
+    work in mail clients, which show the text part only.
+
 Version 12.0.1
 ==============
 
