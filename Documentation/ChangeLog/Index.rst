@@ -7,6 +7,21 @@
 ChangeLog
 =========
 
+Version 12.0.3
+==============
+
+*   [BUGFIX] Add the optional element `<copyright>` to each `<image>` of
+    the XML import (:file:`XmlImportValidator.xsd` and
+    :file:`XmlImportWithoutRelationsValidator.xsd`) and the optional key
+    `copyright` to each image of the JSON import via EXT:reactions. A
+    non-empty copyright is stored in the meta data of the file (requires
+    EXT:filemetadata) before the file references are created, so imported
+    images stay visible in installations which require a copyright. See
+    :ref:`commands-import-image-copyright`.
+*   [BUGFIX] Export the copyright of each image with `events2:export`, if
+    the file has a non-empty copyright in its meta data. Images without
+    copyright are exported as before. See :ref:`commands-export`.
+
 Version 12.0.2
 ==============
 

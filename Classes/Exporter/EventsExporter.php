@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Service\FileCopyrightService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -39,6 +40,7 @@ readonly class EventsExporter
         protected DateTimeUtility $dateTimeUtility,
         protected TypoLinkCodecService $typoLinkCodecService,
         protected LoggerInterface $logger,
+        protected FileCopyrightService $fileCopyrightService,
     ) {}
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
@@ -262,14 +264,22 @@ readonly class EventsExporter
         $images = [];
         foreach ($event->getImages() as $fileReference) {
             try {
-                $publicLink = sprintf(
-                    '%s%s',
-                    rtrim($baseUrl, '/') . '/',
-                    ltrim($fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(), '/'),
-                );
-                $images[] = [
-                    'url' => $publicLink,
+                $originalFile = $fileReference->getOriginalResource()->getOriginalFile();
+                $image = [
+                    'url' => sprintf(
+                        '%s%s',
+                        rtrim($baseUrl, '/') . '/',
+                        ltrim($originalFile->getPublicUrl(), '/'),
+                    ),
                 ];
+
+                // Optional. Keep the payload as before for files without copyright
+                $copyright = $this->fileCopyrightService->getCopyright($originalFile);
+                if ($copyright !== '') {
+                    $image['copyright'] = $copyright;
+                }
+
+                $images[] = $image;
             } catch (\Exception $e) {
                 $this->logger->error(
                     $e->getMessage(),

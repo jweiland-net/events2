@@ -50,6 +50,12 @@ We will validate the imported file against
 All messages will be logged in a :file:`Messages.txt` in same directory of
 imported XML file.
 
+Since version 12.0.3, each image of the XML file accepts an optional
+`<copyright>` element, which is stored in the meta data of the file. The
+JSON import of events sent by `events2:export` handles the copyright the
+same way. See
+:ref:`commands-import-image-copyright`.
+
 
 Namespace change of search plugin
 =================================

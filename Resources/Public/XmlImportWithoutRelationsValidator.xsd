@@ -126,6 +126,7 @@
 	<xs:complexType name="image">
 		<xs:sequence>
 			<xs:element type="requiredUri" name="url" />
+			<xs:element type="xs:string" name="copyright" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute type="xs:integer" name="index" use="required" />
 	</xs:complexType>
