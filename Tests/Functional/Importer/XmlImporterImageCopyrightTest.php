@@ -19,11 +19,11 @@ use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Importer\EventRecordBuilder;
 use JWeiland\Events2\Importer\XmlImporter;
+use JWeiland\Events2\Service\FileCopyrightService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -107,7 +107,7 @@ class XmlImporterImageCopyrightTest extends FunctionalTestCase
                 locationIsRequired: false,
             ),
             $this->get(EventRecordBuilder::class),
-            $this->get(TcaSchemaFactory::class),
+            $this->get(FileCopyrightService::class),
         );
 
         $xmlImporter->setFile($fileObject);

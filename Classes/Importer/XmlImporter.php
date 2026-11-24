@@ -24,6 +24,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Service\FileCopyrightService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
@@ -35,7 +36,6 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -76,7 +76,7 @@ class XmlImporter
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
         protected readonly EventRecordBuilder $eventRecordBuilder,
-        protected readonly TcaSchemaFactory $tcaSchemaFactory,
+        protected readonly FileCopyrightService $fileCopyrightService,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -580,27 +580,12 @@ class XmlImporter
      */
     protected function addCopyright(File $file, array $image): void
     {
-        $copyright = is_string($image['copyright'] ?? null) ? trim($image['copyright']) : '';
-        if ($copyright === '') {
-            return;
-        }
-
-        if (!$this->hasCopyrightColumn()) {
+        if (!$this->fileCopyrightService->storeCopyright($file, $image['copyright'] ?? null)) {
             $this->addMessage(
                 'Copyright of image ignored, as sys_file_metadata has no column "copyright": ' . $image['url'],
                 ContextualFeedbackSeverity::WARNING,
             );
-
-            return;
         }
-
-        $file->getMetaData()->add(['copyright' => $copyright])->save();
-    }
-
-    protected function hasCopyrightColumn(): bool
-    {
-        return $this->tcaSchemaFactory->has('sys_file_metadata')
-            && $this->tcaSchemaFactory->get('sys_file_metadata')->hasField('copyright');
     }
 
     public function setStoragePid(int $storagePid): void

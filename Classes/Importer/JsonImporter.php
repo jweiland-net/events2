@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Importer;
 
 use JWeiland\Events2\Configuration\ImportConfiguration;
+use JWeiland\Events2\Service\FileCopyrightService;
 use JWeiland\Events2\Service\LocationService;
 use JWeiland\Events2\Service\OrganizerService;
 use JWeiland\Events2\Service\Record\CategoryRecordService;
@@ -22,6 +23,7 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -43,6 +45,7 @@ readonly class JsonImporter
         protected ResourceFactory $resourceFactory,
         protected ConnectionPool $connectionPool,
         protected LoggerInterface $logger,
+        protected FileCopyrightService $fileCopyrightService,
     ) {}
 
     public function import(ImportConfiguration $importConfiguration): bool
@@ -406,6 +409,17 @@ readonly class JsonImporter
                 } catch (ExistingTargetFileNameException $e) {
                     continue;
                 }
+            }
+
+            // Store copyright before DataHandler processes the file reference,
+            // as hooks may disable references to files without copyright.
+            if (
+                $fileObject instanceof File
+                && !$this->fileCopyrightService->storeCopyright($fileObject, $imageRecord['copyright'] ?? null)
+            ) {
+                $this->logger->warning(
+                    'Copyright of image ignored, as sys_file_metadata has no column "copyright": ' . $imageRecord['url'],
+                );
             }
 
             $sysFileReferenceUid = StringUtility::getUniqueId('NEW');

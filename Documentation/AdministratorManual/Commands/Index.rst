@@ -115,7 +115,8 @@ Copyright of imported images
 ..  versionadded:: 12.0.3
 
     Each `<image>` of the XML file accepts the optional element
-    `<copyright>` after `<url>`.
+    `<copyright>` after `<url>`. Each image of the JSON import via
+    EXT:reactions accepts the optional key `copyright`.
 
 If the element `<copyright>` is not empty, the importer stores its value
 in the meta data of the file (column `copyright` of table
@@ -132,9 +133,23 @@ XML files without `<copyright>` are imported as before.
         </image>
     </images>
 
+The JSON import of events sent by :ref:`events2:export <commands-export>`
+handles the key `copyright` of each image the same way:
+
+..  code-block:: json
+    :caption: Excerpt of the JSON payload of events2:export
+
+    "images": [
+        {
+            "url": "https://www.example.com/image.png",
+            "copyright": "Max Mustermann"
+        }
+    ]
+
 The column `copyright` is provided by the system extension
 EXT:filemetadata. If it is not installed, the copyright is ignored and a
-warning is written to :file:`Messages.txt`. The import still succeeds.
+warning is written to :file:`Messages.txt` (XML import) or to the TYPO3
+log (JSON import). The import still succeeds.
 
 Use this, if your installation requires a copyright for images. Otherwise,
 file references without copyright may be hidden as soon as an editor
@@ -170,3 +185,10 @@ TYPO3 instance with the system extension EXT:reactions.
 
 `--categories`, `-c`
     Comma-separated UIDs of categories to filter the collected events.
+
+..  versionadded:: 12.0.3
+
+    The copyright of each image is exported, if the file has a non-empty
+    copyright in its meta data (requires EXT:filemetadata). The target
+    instance stores it in the meta data of the imported file. See
+    :ref:`commands-import-image-copyright`.
