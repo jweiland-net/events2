@@ -31,9 +31,11 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\AbstractFile;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -74,6 +76,7 @@ class XmlImporter
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
         protected readonly EventRecordBuilder $eventRecordBuilder,
+        protected readonly TcaSchemaFactory $tcaSchemaFactory,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -550,6 +553,10 @@ class XmlImporter
                 }
             }
 
+            if ($file instanceof File) {
+                $this->addCopyright($file, $image);
+            }
+
             // Create new FileReference
             $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
             $extbaseFileReference->setPid($this->storagePid);
@@ -565,6 +572,35 @@ class XmlImporter
         }
 
         $event->setImages($images);
+    }
+
+    /**
+     * The copyright of an image is optional. It will be stored in the meta
+     * data of the file, if the column "copyright" exists (EXT:filemetadata).
+     */
+    protected function addCopyright(File $file, array $image): void
+    {
+        $copyright = is_string($image['copyright'] ?? null) ? trim($image['copyright']) : '';
+        if ($copyright === '') {
+            return;
+        }
+
+        if (!$this->hasCopyrightColumn()) {
+            $this->addMessage(
+                'Copyright of image ignored, as sys_file_metadata has no column "copyright": ' . $image['url'],
+                ContextualFeedbackSeverity::WARNING,
+            );
+
+            return;
+        }
+
+        $file->getMetaData()->add(['copyright' => $copyright])->save();
+    }
+
+    protected function hasCopyrightColumn(): bool
+    {
+        return $this->tcaSchemaFactory->has('sys_file_metadata')
+            && $this->tcaSchemaFactory->get('sys_file_metadata')->hasField('copyright');
     }
 
     public function setStoragePid(int $storagePid): void

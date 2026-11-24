@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<events>
+    <event index="0">
+        <process_as>new</process_as>
+        <import_id>388</import_id>
+        <event_type>single</event_type>
+        <title>Termin mit Bildrechten</title>
+        <teaser>Einfacher Termin mit Copyright am Bild</teaser>
+        <event_begin>2030-11-11</event_begin>
+        <event_time>
+            <time_begin>16:30</time_begin>
+            <duration>60</duration>
+        </event_time>
+        <detail_information/>
+        <images>
+            <image index="0">
+                <url>https://www.example.com/events2-image-with-copyright.png</url>
+                <copyright>Max Mustermann</copyright>
+            </image>
+            <image index="1">
+                <url>https://www.example.com/events2-image-without-copyright.png</url>
+            </image>
+        </images>
+        <categories/>
+    </event>
+</events>

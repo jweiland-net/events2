@@ -135,6 +135,20 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $this->assertPathSegmentsEqualSlugsOfStoredRecords();
     }
 
+    #[Test]
+    public function importIgnoresCopyrightOfImageWithoutMetaDataColumn(): void
+    {
+        // EXT:filemetadata is not loaded, so sys_file_metadata has no column "copyright"
+        self::assertTrue($this->importFile('SimpleEventWithImageCopyright.xml'));
+
+        self::assertMatchesRegularExpression(
+            '/Copyright of image ignored/',
+            file_get_contents(GeneralUtility::getFileAbsFileName(
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
+        );
+    }
+
     /**
      * @param array<string, mixed> $generatorOptions
      */
@@ -195,6 +209,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
                 locationIsRequired: false,
             ),
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $xmlImporter->setFile($fileObject);

@@ -7,6 +7,16 @@
 ChangeLog
 =========
 
+Version 12.0.3
+==============
+
+*   [BUGFIX] Add the optional element `<copyright>` to each `<image>` of
+    the XML import (:file:`XmlImportValidator.xsd` and
+    :file:`XmlImportWithoutRelationsValidator.xsd`). A non-empty copyright
+    is stored in the meta data of the file (requires EXT:filemetadata), so
+    imported images stay visible in installations which require a
+    copyright. See :ref:`commands-import-image-copyright`.
+
 Version 12.0.2
 ==============
 

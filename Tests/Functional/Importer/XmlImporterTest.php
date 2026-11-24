@@ -118,6 +118,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
     }
 
@@ -233,6 +234,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -286,6 +288,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -322,6 +325,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -371,6 +375,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -440,6 +445,7 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
             $this->get(EventRecordBuilder::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject->setFile($fileObject);

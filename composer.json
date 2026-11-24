@@ -36,6 +36,7 @@
 	"require-dev": {
 		"ergebnis/composer-normalize": "^2.44",
 		"symfony/dependency-injection": "!=7.3.4",
+		"typo3/cms-filemetadata": "^13.4.12",
 		"typo3/cms-fluid-styled-content": "^13.4.12",
 		"typo3/cms-form": "^13.4.12",
 		"typo3/cms-install": "^13.4.12",

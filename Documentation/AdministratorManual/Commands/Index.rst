@@ -107,6 +107,39 @@ import the XML file is deleted. If the XML file does not exist, the
 command ends successfully without doing anything. So you can schedule the
 command and upload a new file whenever you want to import events.
 
+..  _commands-import-image-copyright:
+
+Copyright of imported images
+----------------------------
+
+..  versionadded:: 12.0.3
+
+    Each `<image>` of the XML file accepts the optional element
+    `<copyright>` after `<url>`.
+
+If the element `<copyright>` is not empty, the importer stores its value
+in the meta data of the file (column `copyright` of table
+`sys_file_metadata`). An existing copyright of the file is overwritten.
+XML files without `<copyright>` are imported as before.
+
+..  code-block:: xml
+    :caption: Excerpt of an XML file for events2:import
+
+    <images>
+        <image index="0">
+            <url>https://www.example.com/image.png</url>
+            <copyright>Max Mustermann</copyright>
+        </image>
+    </images>
+
+The column `copyright` is provided by the system extension
+EXT:filemetadata. If it is not installed, the copyright is ignored and a
+warning is written to :file:`Messages.txt`. The import still succeeds.
+
+Use this, if your installation requires a copyright for images. Otherwise,
+file references without copyright may be hidden as soon as an editor
+saves the imported event, for example to activate it.
+
 ..  _commands-export:
 
 Export events with events2:export
